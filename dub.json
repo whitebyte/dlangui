@@ -32,7 +32,7 @@
     "excludedSourceFiles-windows": ["3rdparty/fontconfig/*"],
 
     "dependencies": {
-        "inilike": "~>1.2.2",
+        "inilike": "~>1.2.3",
         "icontheme": "~>1.2.3",
         "arsd-official:dom": "~>11.5.3",
         "arsd-official:image_files": "~>11.5.3"
