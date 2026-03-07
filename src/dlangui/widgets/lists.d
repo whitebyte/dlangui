@@ -732,6 +732,11 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
         if (_hoverItemIndex == index)
             return;
         if (_hoverItemIndex != -1) {
+            if (_adapter.wantMouseEvents) {
+                Widget w = _adapter.itemWidget(_hoverItemIndex);
+                if (w)
+                    w.onMouseEvent(new MouseEvent(MouseAction.Leave, MouseButton.None, 0, 0, 0));
+            }
             _adapter.resetItemState(_hoverItemIndex, State.Hovered);
             invalidate();
         }
@@ -1373,8 +1378,8 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
                 if ((event.flags & (MouseFlag.LButton || MouseFlag.RButton)) || _selectOnHover) {
                     if (_selectedItemIndex != i && itemEnabled(i)) {
                         int prevSelection = _selectedItemIndex;
+                        setHoverItem(i);
                         selectItem(i);
-                        setHoverItem(-1);
                         selectionChanged(_selectedItemIndex, prevSelection);
                     }
                 } else {

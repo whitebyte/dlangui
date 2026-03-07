@@ -463,7 +463,7 @@ class MenuItemWidget : WidgetGroupDefaultDrawing {
                     _accel.alignment = Align.Right | Align.VCenter;
                 addChild(_accel);
             }
-            trackHover = _mainMenu;
+            trackHover = true;
             clickable = true;
         }
     }
