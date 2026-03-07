@@ -503,7 +503,11 @@ class ScrollWidget :  ScrollWidgetBase {
         // override it
         Point sz;
         if (_contentWidget) {
-            _contentWidget.measure(SIZE_UNSPECIFIED, SIZE_UNSPECIFIED);
+            int cw = (_hscrollbarMode == ScrollBarMode.Invisible && _clientRect.width > 0)
+                     ? _clientRect.width : SIZE_UNSPECIFIED;
+            int ch = (_vscrollbarMode == ScrollBarMode.Invisible && _clientRect.height > 0)
+                     ? _clientRect.height : SIZE_UNSPECIFIED;
+            _contentWidget.measure(cw, ch);
             sz.x = _contentWidget.measuredWidth;
             sz.y = _contentWidget.measuredHeight;
         }
@@ -536,7 +540,11 @@ class ScrollWidget :  ScrollWidgetBase {
         if (_contentWidget) {
             Point sz = fullContentSize();
             Point p = scrollPos;
-            _contentWidget.layout(Rect(_clientRect.left - p.x, _clientRect.top - p.y, _clientRect.left + sz.x - p.x, _clientRect.top + sz.y - p.y));
+            int layoutWidth = (_hscrollbarMode == ScrollBarMode.Invisible && _clientRect.width > sz.x)
+                              ? _clientRect.width : sz.x;
+            int layoutHeight = (_vscrollbarMode == ScrollBarMode.Invisible && _clientRect.height > sz.y)
+                               ? _clientRect.height : sz.y;
+            _contentWidget.layout(Rect(_clientRect.left - p.x, _clientRect.top - p.y, _clientRect.left + layoutWidth - p.x, _clientRect.top + layoutHeight - p.y));
             _contentWidget.onDraw(buf);
         }
     }
