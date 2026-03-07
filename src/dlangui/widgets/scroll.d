@@ -372,8 +372,8 @@ class ScrollWidgetBase :  WidgetGroup, OnScrollHandler {
         int clientWidth = _clientRect.width;
         int clientHeight = _clientRect.height;
 
-        int hsbHeight = _hscrollbar.measuredHeight;
-        int vsbWidth = _hscrollbar.measuredWidth;
+        int hsbHeight = _hscrollbar ? _hscrollbar.measuredHeight : 0;                                                                                                                              
+        int vsbWidth = _vscrollbar ? _vscrollbar.measuredWidth : 0; 
 
         int clientWidthWithScrollbar = clientWidth - vsbWidth;
         int clientHeightWithScrollbar = clientHeight - hsbHeight;
