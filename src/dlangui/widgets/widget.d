@@ -638,9 +638,9 @@ public:
     @property int layoutWeight() { return style.layoutWeight; }
 
     /// sets layout width options (WRAP_CONTENT, FILL_PARENT, or some constant value)
-    @property Widget layoutWidth(int value) { ownStyle.layoutWidth = value; return this; }
+    @property Widget layoutWidth(int value) { ownStyle.layoutWidth = value; requestLayout(); return this; }
     /// sets layout height options (WRAP_CONTENT, FILL_PARENT, or some constant value)
-    @property Widget layoutHeight(int value) { ownStyle.layoutHeight = value; return this; }
+    @property Widget layoutHeight(int value) { ownStyle.layoutHeight = value; requestLayout(); return this; }
     /// sets layout weight (while resizing to fill parent, widget will be resized proportionally to this value)
     @property Widget layoutWeight(int value) { ownStyle.layoutWeight = value; return this; }
 
