@@ -337,7 +337,7 @@ class ResizerWidget : Widget {
         trackHover = true;
     }
 
-    @property bool validProps() {
+    @property bool hasSiblings() {
         return _previousWidget && _nextWidget;
     }
 
@@ -360,7 +360,7 @@ class ResizerWidget : Widget {
             _previousWidget = parentLayout.child(index - 1);
             _nextWidget = parentLayout.child(index + 1);
         }
-        if (validProps) {
+        if (hasSiblings) {
             if (_orientation == Orientation.Vertical) {
                 styleId = _styleVertical;
             } else {
@@ -408,7 +408,7 @@ class ResizerWidget : Widget {
     /// process mouse event; return true if event is processed by widget.
     override bool onMouseEvent(MouseEvent event) {
         // support onClick
-        immutable newWidth = _orientation == Orientation.Vertical ? event.y : event.x;
+        immutable mousePos = _orientation == Orientation.Vertical ? event.y : event.x;
         if (event.action == MouseAction.ButtonDown && event.button == MouseButton.Left) {
             setState(State.Pressed);
             _dragging = true;
@@ -419,7 +419,7 @@ class ResizerWidget : Widget {
             _scrollArea = _pos;
             _minDragDelta = 0;
             _maxDragDelta = 0;
-            if (validProps) {
+            if (hasSiblings) {
                 Rect r1 = _previousWidget.pos;
                 Rect r2 = _nextWidget.pos;
                 _scrollArea.left = r1.left;
@@ -435,7 +435,7 @@ class ResizerWidget : Widget {
                 if (_delta > _maxDragDelta)
                     _delta = _maxDragDelta;
             } else {
-                resizeAndFireEvent(newWidth, ResizerEventType.StartDragging);
+                resizeAndFireEvent(mousePos, ResizerEventType.StartDragging);
             }
             return true;
         }
@@ -447,13 +447,13 @@ class ResizerWidget : Widget {
             if (_dragging) {
                 //sendScrollEvent(ScrollAction.SliderReleased, _position);
                 _dragging = false;
-                resizeAndFireEvent(newWidth, ResizerEventType.EndDragging);
+                resizeAndFireEvent(mousePos, ResizerEventType.EndDragging);
             }
             return true;
         }
         if (event.action == MouseAction.Move && _dragging) {
             int delta = _orientation == Orientation.Vertical ? event.y - _dragStart.y : event.x - _dragStart.x;
-            resizeAndFireEvent(newWidth, ResizerEventType.Dragging);
+            resizeAndFireEvent(mousePos, ResizerEventType.Dragging);
             _delta = _dragStartPosition + delta;
             if (_delta < _minDragDelta)
                 _delta = _minDragDelta;
@@ -511,29 +511,41 @@ class ResizerWidget : Widget {
             if (_dragging) {
                 resetState(State.Pressed);
                 _dragging = false;
-                resizeAndFireEvent(newWidth, ResizerEventType.EndDragging);
+                resizeAndFireEvent(mousePos, ResizerEventType.EndDragging);
             }
             return true;
         }
         return false;
     }
 
-    private void resizeAndFireEvent(short newWidth, ResizerEventType type)
+    private void resizeAndFireEvent(short mousePos, ResizerEventType type)
     {
-        // Respect the dimensions
-        if( (newWidth > minPreviousItemWidth) && (newWidth < (parent.width - minWidth - minNextItemWidth)) && (_previousWidget is null ||
-           ( (newWidth > _previousWidget.minWidth) && 
-	     (newWidth < (parent.width - minWidth - _nextWidget.minWidth))
-	    )))
-        {
-	    if (_previousWidget !is null) {
-		_previousWidget.layoutWidth = newWidth;
-	    }
+        if (!hasSiblings) {
             if (resizeEvent.assigned)
-            {
-               resizeEvent(this, type, newWidth);
-            }
+                resizeEvent(this, type, mousePos);
+            return;
         }
+        // Delta-based resize: apply mouse displacement since drag start to the
+        // previous widget's size at drag start
+        int startPrevSize = _orientation == Orientation.Horizontal
+            ? _dragStartRect.left - _scrollArea.left   // prev widget width at drag start
+            : _dragStartRect.top  - _scrollArea.top;   // prev widget height at drag start
+        int dragDelta = _orientation == Orientation.Horizontal
+            ? mousePos - _dragStart.x
+            : mousePos - _dragStart.y;
+        int newSize = startPrevSize + dragDelta;
+        // Clamp to min sizes
+        if (newSize < cast(int)minPreviousItemWidth)
+            newSize = cast(int)minPreviousItemWidth;
+        if (newSize > parent.width - minWidth - cast(int)minNextItemWidth)
+            newSize = parent.width - minWidth - cast(int)minNextItemWidth;
+        if (newSize < _previousWidget.minWidth)
+            newSize = _previousWidget.minWidth;
+        if (newSize > parent.width - minWidth - _nextWidget.minWidth)
+            newSize = parent.width - minWidth - _nextWidget.minWidth;
+        _previousWidget.layoutWidth = newSize;
+        if (resizeEvent.assigned)
+            resizeEvent(this, type, newSize);
     }
 }
 
