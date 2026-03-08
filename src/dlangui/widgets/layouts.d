@@ -193,7 +193,7 @@ class LayoutItems {
                 contentSecondarySize = maxItem;
             else
                 contentSecondarySize = rc.width;
-            if ((_layoutHeight == FILL_PARENT || isPercentSize(_layoutHeight)) && totalSize < rc.height && resizableSize > 0) {
+            if ((_layoutHeight == FILL_PARENT || isPercentSize(_layoutHeight)) && totalSize < rc.height && resizableWeight > 0) {
                 delta = rc.height - totalSize; // total space to add to fit
             } else if (totalSize > rc.height) {
                 delta = rc.height - totalSize; // total space to reduce to fit
@@ -203,7 +203,7 @@ class LayoutItems {
                 contentSecondarySize = maxItem;
             else
                 contentSecondarySize = rc.height;
-            if ((_layoutWidth == FILL_PARENT || isPercentSize(_layoutWidth)) && totalSize < rc.width && resizableSize > 0)
+            if ((_layoutWidth == FILL_PARENT || isPercentSize(_layoutWidth)) && totalSize < rc.width && resizableWeight > 0)
                 delta = rc.width - totalSize; // total space to add to fit
             else if (totalSize > rc.width)
                 delta = rc.width - totalSize; // total space to reduce to fit
@@ -224,6 +224,8 @@ class LayoutItems {
                 scaleFactor = 10000 * delta / (nonresizableSize + resizableSize);
             else if (resizableSize > 0)
                 scaleFactor = 10000 * delta / resizableSize;
+            else if (resizableWeight > 0)
+                scaleFactor = 10000 * delta / resizableWeight;
             else
                 scaleFactor = 0;
         }
@@ -253,7 +255,7 @@ class LayoutItems {
             int size = item.measuredSize;
             if (needResize && (layoutSize == FILL_PARENT || isPercentSize(layoutSize) || needForceResize)) {
                 // do resize
-                int correction = (delta < 0 || item.canExtend) ? scaleFactor * weight * size / 10000 : 0;
+                int correction = (delta < 0 || item.canExtend) ? (resizableSize > 0 ? scaleFactor * weight * size / 10000 : scaleFactor * weight / 10000) : 0;
                 deltaTotal += correction;
                 // for last resized, apply additional correction to resolve calculation inaccuracy
                 if (i == lastResized) {
