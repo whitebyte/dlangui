@@ -520,22 +520,11 @@ class ResizerWidget : Widget {
 
     private void resizeAndFireEvent(short mousePos, ResizerEventType type)
     {
-        import std.stdio : writeln;
-        writeln("[resizer] mousePos=", mousePos,
-                " dragStart.x=", _dragStart.x,
-                " dragStartRect=", _dragStartRect,
-                " scrollArea=", _scrollArea,
-                " hasSiblings=", hasSiblings);
         if (!hasSiblings) {
             if (resizeEvent.assigned)
                 resizeEvent(this, type, mousePos);
             return;
         }
-        import std.stdio : writeln;
-        writeln("[resizer] mousePos=", mousePos,
-                " dragStart=", _dragStart,
-                " dragStartRect=", _dragStartRect,
-                " scrollArea=", _scrollArea);
         // Delta-based resize: resize both siblings simultaneously to keep the
         // total size constant. This avoids proportional scaling of unrelated
         // children regardless of whether siblings are FILL_PARENT or fixed.
