@@ -525,27 +525,34 @@ class ResizerWidget : Widget {
                 resizeEvent(this, type, mousePos);
             return;
         }
-        // Delta-based resize: apply mouse displacement since drag start to the
-        // previous widget's size at drag start
-        int startPrevSize = _orientation == Orientation.Horizontal
-            ? _dragStartRect.left - _scrollArea.left   // prev widget width at drag start
-            : _dragStartRect.top  - _scrollArea.top;   // prev widget height at drag start
+        // Delta-based resize: resize both siblings simultaneously to keep the
+        // total size constant. This avoids proportional scaling of unrelated
+        // children regardless of whether siblings are FILL_PARENT or fixed.
         int dragDelta = _orientation == Orientation.Horizontal
             ? mousePos - _dragStart.x
             : mousePos - _dragStart.y;
-        int newSize = startPrevSize + dragDelta;
-        // Clamp to min sizes
-        if (newSize < cast(int)minPreviousItemWidth)
-            newSize = cast(int)minPreviousItemWidth;
-        if (newSize > parent.width - minWidth - cast(int)minNextItemWidth)
-            newSize = parent.width - minWidth - cast(int)minNextItemWidth;
-        if (newSize < _previousWidget.minWidth)
-            newSize = _previousWidget.minWidth;
-        if (newSize > parent.width - minWidth - _nextWidget.minWidth)
-            newSize = parent.width - minWidth - _nextWidget.minWidth;
-        _previousWidget.layoutWidth = newSize;
+        int startPrevSize = _orientation == Orientation.Horizontal
+            ? _dragStartRect.left - _scrollArea.left    // prev widget width at drag start
+            : _dragStartRect.top  - _scrollArea.top;    // prev widget height at drag start
+        int startNextSize = _orientation == Orientation.Horizontal
+            ? _scrollArea.right - _dragStartRect.right  // next widget width at drag start
+            : _scrollArea.bottom - _dragStartRect.bottom; // next widget height at drag start
+        // Clamp delta so neither sibling shrinks below its minimum
+        int maxDelta = startPrevSize - cast(int)minPreviousItemWidth;
+        int minDelta = -(startNextSize - cast(int)minNextItemWidth);
+        if (dragDelta > maxDelta) dragDelta = maxDelta;
+        if (dragDelta < minDelta) dragDelta = minDelta;
+        int newPrevSize = startPrevSize + dragDelta;
+        int newNextSize = startNextSize - dragDelta;
+        if (_orientation == Orientation.Horizontal) {
+            _previousWidget.layoutWidth = newPrevSize;
+            _nextWidget.layoutWidth = newNextSize;
+        } else {
+            _previousWidget.layoutHeight = newPrevSize;
+            _nextWidget.layoutHeight = newNextSize;
+        }
         if (resizeEvent.assigned)
-            resizeEvent(this, type, newSize);
+            resizeEvent(this, type, newPrevSize);
     }
 }
 
