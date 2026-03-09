@@ -311,9 +311,9 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
     protected uint _caretColorReplace = 0x808080FF;
     protected uint _matchingBracketHightlightColor = 0x60FFE0B0;
 
-    protected uint _iconsPaneWidth = WIDGET_STYLE_CONSOLE ? 1 : 16;
-    protected uint _foldingPaneWidth = WIDGET_STYLE_CONSOLE ? 1 : 12;
-    protected uint _modificationMarksPaneWidth = WIDGET_STYLE_CONSOLE ? 1 : 4;
+    protected uint _iconsPaneWidth = 16;
+    protected uint _foldingPaneWidth = 12;
+    protected uint _modificationMarksPaneWidth = 4;
     /// when true, call measureVisibileText on next layout
     protected bool _contentChanged = true;
 
@@ -601,7 +601,7 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
         }
         _leftPaneWidth = _lineNumbersWidth + _modificationMarksWidth + _foldingWidth + _iconsWidth;
         if (_leftPaneWidth)
-            _leftPaneWidth += WIDGET_STYLE_CONSOLE ? 1 : 3;
+            _leftPaneWidth += 3;
     }
 
     protected void drawLeftPaneFolding(DrawBuf buf, Rect rc, int line) {
@@ -759,7 +759,7 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
         buf.fillRect(rc, _leftPaneBackgroundColor);
         //buf.fillRect(Rect(rc.right - 2, rc.top, rc.right - 1, rc.bottom), _leftPaneBackgroundColor2);
         //buf.fillRect(Rect(rc.right - 1, rc.top, rc.right - 0, rc.bottom), _leftPaneBackgroundColor3);
-        rc.right -= WIDGET_STYLE_CONSOLE ? 1 : 3;
+        rc.right -= 3;
         if (_foldingWidth) {
             Rect rc2 = rc;
             rc.right = rc2.left = rc2.right - _foldingWidth;
@@ -1218,33 +1218,24 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
 
     protected void startCaretBlinking() {
         if (window) {
-            static if (WIDGET_STYLE_CONSOLE) {
-                window.caretRect = caretRect;
-                window.caretReplace = _replaceMode;
-            } else {
-                long ts = currentTimeMillis;
-                if (_caretTimerId) {
-                    if (_lastBlinkStartTs + _caretBlingingInterval / 4 > ts)
-                        return; // don't update timer too frequently
-                    cancelTimer(_caretTimerId);
-                }
-                _caretTimerId = setTimer(_caretBlingingInterval / 2);
-                _lastBlinkStartTs = ts;
-                _caretBlinkingPhase = false;
-                invalidate();
+            long ts = currentTimeMillis;
+            if (_caretTimerId) {
+                if (_lastBlinkStartTs + _caretBlingingInterval / 4 > ts)
+                    return; // don't update timer too frequently
+                cancelTimer(_caretTimerId);
             }
+            _caretTimerId = setTimer(_caretBlingingInterval / 2);
+            _lastBlinkStartTs = ts;
+            _caretBlinkingPhase = false;
+            invalidate();
         }
     }
 
     protected void stopCaretBlinking() {
         if (window) {
-            static if (WIDGET_STYLE_CONSOLE) {
-                window.caretRect = Rect.init;
-            } else {
-                if (_caretTimerId) {
-                    cancelTimer(_caretTimerId);
-                    _caretTimerId = 0;
-                }
+            if (_caretTimerId) {
+                cancelTimer(_caretTimerId);
+                _caretTimerId = 0;
             }
         }
     }

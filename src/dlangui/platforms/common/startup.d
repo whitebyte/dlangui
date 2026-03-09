@@ -309,48 +309,32 @@ version (Windows) {
 
 /// initialize logging (for win32 - to file ui.log, for other platforms - stderr; log level is TRACE for debug builds, and WARN for release builds)
 extern (C) void initLogs() {
-    static if (BACKEND_CONSOLE) {
-        static import std.stdio;
+    static import std.stdio;
+    version (Windows) {
         debug {
             Log.setFileLogger(new std.stdio.File("ui.log", "w"));
-            Log.i("Debug build. Logging to file ui.log");
-            Log.setLogLevel(LogLevel.Trace);
         } else {
             // no logging unless version ForceLogs is set
             version(ForceLogs) {
                 Log.setFileLogger(new std.stdio.File("ui.log", "w"));
                 Log.i("Logging to file ui.log");
-                //Log.setLogLevel(LogLevel.Trace);
             }
         }
+    } else version(Android) {
+        Log.setLogTag("dlangui");
+        Log.setLogLevel(LogLevel.Trace);
     } else {
-        static import std.stdio;
-        version (Windows) {
-            debug {
-                Log.setFileLogger(new std.stdio.File("ui.log", "w"));
-            } else {
-                // no logging unless version ForceLogs is set
-                version(ForceLogs) {
-                    Log.setFileLogger(new std.stdio.File("ui.log", "w"));
-                    Log.i("Logging to file ui.log");
-                }
-            }
-        } else version(Android) {
-            Log.setLogTag("dlangui");
+        Log.setStderrLogger();
+    }
+    debug {
+        Log.setLogLevel(LogLevel.Trace);
+    } else {
+        version(ForceLogs) {
             Log.setLogLevel(LogLevel.Trace);
+            Log.i("Log level: trace");
         } else {
-            Log.setStderrLogger();
-        }
-        debug {
-            Log.setLogLevel(LogLevel.Trace);
-        } else {
-            version(ForceLogs) {
-                Log.setLogLevel(LogLevel.Trace);
-                Log.i("Log level: trace");
-            } else {
-                Log.setLogLevel(LogLevel.Warn);
-                Log.i("Log level: warn");
-            }
+            Log.setLogLevel(LogLevel.Warn);
+            Log.i("Log level: warn");
         }
     }
     Log.i("Logger is initialized");

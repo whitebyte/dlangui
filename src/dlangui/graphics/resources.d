@@ -94,9 +94,7 @@ import dlangui.core.config;
 
 import dlangui.core.logger;
 import dlangui.core.types;
-static if (BACKEND_GUI) {
-    import dlangui.graphics.images;
-}
+import dlangui.graphics.images;
 import dlangui.graphics.colors;
 import dlangui.graphics.drawbuf;
 import std.file;
@@ -221,11 +219,7 @@ EmbeddedResource[] embedResources(string[] resourceNames)() {
 
 /// embed all resources from list
 EmbeddedResource[] embedResourcesFromList(string resourceList)() {
-    static if (WIDGET_STYLE_CONSOLE) {
-        return embedResources!(splitLines(import("console_" ~ resourceList)))();
-    } else {
-        return embedResources!(splitLines(import(resourceList)))();
-    }
+    return embedResources!(splitLines(import(resourceList)))();
 }
 
 
@@ -528,26 +522,6 @@ static uint decodeAngle(string s) {
     return ((angle % 360) + 360) % 360;
 }
 
-static if (WIDGET_STYLE_CONSOLE) {
-    /**
-    Sample format:
-    {
-        text: [
-            "╔═╗",
-            "║ ║",
-            "╚═╝"],
-        backgroundColor: [0x000080], // put more values for individual colors of cells
-        textColor: [0xFF0000], // put more values for individual colors of cells
-        ninepatch: [1,1,1,1]
-    }
-    */
-    static Drawable createTextDrawable(string s) {
-        TextDrawable drawable = new TextDrawable(s);
-        if (drawable.width == 0 || drawable.height == 0)
-            return null;
-        return drawable;
-    }
-}
 
 /// decode solid color / gradient / border drawable from string like #AARRGGBB, e.g. #5599AA
 ///
@@ -615,221 +589,6 @@ static Drawable createColorDrawable(string s) {
     return new EmptyDrawable(); // invalid format - just return empty drawable
 }
 
-static if (WIDGET_STYLE_CONSOLE) {
-    /**
-        Text image drawable.
-        Resource file extension: .tim
-        Image format is JSON based. Sample:
-                {
-                    text: [
-                       "╔═╗",
-                       "║ ║",
-                       "╚═╝"],
-                    backgroundColor: [0x000080],
-                    textColor: [0xFF0000],
-                    ninepatch: [1,1,1,1]
-                }
-
-        Short form:
-
-    {'╔═╗' '║ ║' '╚═╝' bc 0x000080 tc 0xFF0000 ninepatch 1 1 1 1}
-
-    */
-
-    abstract class ConsoleDrawBuf : DrawBuf
-    {
-        abstract void drawChar(int x, int y, dchar ch, uint color, uint bgcolor);
-    }
-
-    class TextDrawable : Drawable {
-        private int _width;
-        private int _height;
-        private dchar[] _text;
-        private uint[] _bgColors;
-        private uint[] _textColors;
-        private Rect _padding;
-        private Rect _ninePatch;
-        private bool _tiled;
-        private bool _stretched;
-        private bool _hasNinePatch;
-        this(int dx, int dy, dstring text, uint textColor, uint bgColor) {
-            _width = dx;
-            _height = dy;
-            _text.assumeSafeAppend;
-            for (int i = 0; i < text.length && i < dx * dy; i++)
-                _text ~= text[i];
-            for (int i = cast(int)_text.length; i < dx * dy; i++)
-                _text ~= ' ';
-            _textColors.assumeSafeAppend;
-            _bgColors.assumeSafeAppend;
-            for (int i = 0; i < dx * dy; i++) {
-                _textColors ~= textColor;
-                _bgColors ~= bgColor;
-            }
-        }
-        this(string src) {
-            import std.utf;
-            this(toUTF32(src));
-        }
-        /**
-           Create from text drawable source file format:
-           {
-            text:
-           "text line 1"
-           "text line 2"
-           "text line 3"
-           backgroundColor: 0xFFFFFF [,0xFFFFFF]*
-           textColor: 0x000000, [,0x000000]*
-           ninepatch: left,top,right,bottom
-           padding: left,top,right,bottom
-            }
-
-           Text lines may be in "" or '' or `` quotes.
-           bc can be used instead of backgroundColor, tc instead of textColor
-
-           Sample short form:
-           { 'line1' 'line2' 'line3' bc 0xFFFFFFFF tc 0x808080 stretch }
-        */
-        this(dstring src) {
-            import dlangui.dml.tokenizer;
-            import std.utf;
-            Token[] tokens = tokenize(toUTF8(src), ["//"], true, true, true);
-            dstring[] lines;
-            enum Mode {
-                None,
-                Text,
-                BackgroundColor,
-                TextColor,
-                Padding,
-                NinePatch,
-            }
-            Mode mode = Mode.Text;
-            uint[] bg;
-            uint[] col;
-            uint[] pad;
-            uint[] nine;
-            for (int i; i < tokens.length; i++) {
-                if (tokens[i].type == TokenType.ident) {
-                    if (tokens[i].text == "backgroundColor" || tokens[i].text == "bc")
-                        mode = Mode.BackgroundColor;
-                    else if (tokens[i].text == "textColor" || tokens[i].text == "tc")
-                        mode = Mode.TextColor;
-                    else if (tokens[i].text == "text")
-                        mode = Mode.Text;
-                    else if (tokens[i].text == "stretch")
-                        _stretched = true;
-                    else if (tokens[i].text == "tile")
-                        _tiled = true;
-                    else if (tokens[i].text == "padding") {
-                        mode = Mode.Padding;
-                    } else if (tokens[i].text == "ninepatch") {
-                        _hasNinePatch = true;
-                        mode = Mode.NinePatch;
-                    } else
-                        mode = Mode.None;
-                } else if (tokens[i].type == TokenType.integer) {
-                    switch(mode) {
-                        case Mode.BackgroundColor: _bgColors ~= tokens[i].intvalue; break;
-                        case Mode.TextColor:
-                        case Mode.Text:
-                            _textColors ~= tokens[i].intvalue; break;
-                        case Mode.Padding: pad ~= tokens[i].intvalue; break;
-                        case Mode.NinePatch: nine ~= tokens[i].intvalue; break;
-                        default:
-                            break;
-                    }
-                } else if (tokens[i].type == TokenType.str && mode == Mode.Text) {
-                    dstring line = toUTF32(tokens[i].text);
-                    lines ~= line;
-                    if (_width < line.length)
-                        _width = cast(int)line.length;
-                }
-            }
-            // pad and convert text
-            _height = cast(int)lines.length;
-            if (!_height) {
-                _width = 0;
-                return;
-            }
-            for (int y = 0; y < _height; y++) {
-                for (int x = 0; x < _width; x++) {
-                    if (x < lines[y].length)
-                        _text ~= lines[y][x];
-                    else
-                        _text ~= ' ';
-                }
-            }
-            // pad padding and ninepatch
-            for (int k = 1; k <= 4; k++) {
-                if (nine.length < k)
-                    nine ~= 0;
-                if (pad.length < k)
-                    pad ~= 0;
-                //if (pad[k-1] < nine[k-1])
-                //    pad[k-1] = nine[k-1];
-            }
-            _padding = Rect(pad[0], pad[1], pad[2], pad[3]);
-            _ninePatch = Rect(nine[0], nine[1], nine[2], nine[3]);
-            // pad colors
-            for (int k = 1; k <= _width * _height; k++) {
-                if (_textColors.length < k)
-                    _textColors ~= _textColors.length ? _textColors[$ - 1] : 0;
-                if (_bgColors.length < k)
-                    _bgColors ~= _bgColors.length ? _bgColors[$ - 1] : 0xFFFFFFFF;
-            }
-        }
-        @property override int width() {
-            return _width;
-        }
-        @property override int height() {
-            return _height;
-        }
-        @property override Rect padding() {
-            return _padding;
-        }
-
-        protected void drawChar(ConsoleDrawBuf buf, int srcx, int srcy, int dstx, int dsty) {
-            if (srcx < 0 || srcx >= _width || srcy < 0 || srcy >= _height)
-                return;
-            int index = srcy * _width + srcx;
-            if (_textColors[index].isFullyTransparentColor && _bgColors[index].isFullyTransparentColor)
-                return; // do not draw
-            buf.drawChar(dstx, dsty, _text[index], _textColors[index], _bgColors[index]);
-        }
-
-        private static int wrapNinePatch(int v, int width, int ninewidth, int left, int right) {
-            if (v < left)
-                return v;
-            if (v >= width - right)
-                return v - (width - right) + (ninewidth - right);
-            return left + (ninewidth - left - right) * (v - left) / (width - left - right);
-        }
-
-        override void drawTo(DrawBuf drawbuf, Rect rc, uint state = 0, int tilex0 = 0, int tiley0 = 0) {
-            if (!_width || !_height)
-                return; // empty image
-            ConsoleDrawBuf buf = cast(ConsoleDrawBuf)drawbuf;
-            if (!buf) // wrong draw buffer
-                return;
-            if (_hasNinePatch || _tiled || _stretched) {
-                for (int y = 0; y < rc.height; y++) {
-                    for (int x = 0; x < rc.width; x++) {
-                        int srcx = wrapNinePatch(x, rc.width, _width, _ninePatch.left, _ninePatch.right);
-                        int srcy = wrapNinePatch(y, rc.height, _height, _ninePatch.top, _ninePatch.bottom);
-                        drawChar(buf, srcx, srcy, rc.left + x, rc.top + y);
-                    }
-                }
-            } else {
-                for (int y = 0; y < rc.height && y < _height; y++) {
-                    for (int x = 0; x < rc.width && x < _width; x++) {
-                        drawChar(buf, x, y, rc.left + x, rc.top + y);
-                    }
-                }
-            }
-            //buf.drawImage(rc.left, rc.top, _image);
-        }
-    }
-}
 
 class ImageDrawable : Drawable {
     protected DrawBufRef _image;
@@ -1257,7 +1016,6 @@ alias DrawableRef = Ref!Drawable;
 
 
 
-static if (BACKEND_GUI) {
 /// decoded raster images cache (png, jpeg) -- access by filenames
 class ImageCache {
 
@@ -1376,7 +1134,6 @@ __gshared ImageCache _imageCache;
     if (_imageCache !is null)
         destroy(_imageCache);
     _imageCache = cache;
-}
 }
 
 __gshared DrawableCache _drawableCache;
@@ -1547,8 +1304,7 @@ class DrawableCache {
         foreach(string path; _resourcePaths) {
             string fn;
             fn = checkFileName(path, id, ".xml");
-            if (fn is null && WIDGET_STYLE_CONSOLE)
-                fn = checkFileName(path, id, ".tim");
+
             if (fn is null)
                 fn = checkFileName(path, id, ".png");
             if (fn is null)
@@ -1563,15 +1319,13 @@ class DrawableCache {
         Log.w("resource ", id, " is not found");
         return null;
     }
-    static if (BACKEND_GUI) {
-        /// get image (DrawBuf) from imageCache by resource id
-        DrawBufRef getImage(string id) {
-            DrawBufRef res;
-            string fname = findResource(id);
-            if (fname.endsWith(".png") || fname.endsWith(".jpg"))
-                return imageCache.get(fname);
-            return res;
-        }
+    /// get image (DrawBuf) from imageCache by resource id
+    DrawBufRef getImage(string id) {
+        DrawBufRef res;
+        string fname = findResource(id);
+        if (fname.endsWith(".png") || fname.endsWith(".jpg"))
+            return imageCache.get(fname);
+        return res;
     }
     this() {
         debug Log.i("Creating DrawableCache");
@@ -1606,39 +1360,17 @@ private Drawable makeDrawableFromId(in string id, in bool tiled, ColorTransform 
                 Log.d("loaded .xml drawable from ", id);
                 return d;
             }
-        } else if (id.endsWith(".tim") || id.endsWith(".TIM")) {
-            static if (WIDGET_STYLE_CONSOLE) {
-                try {
-                    // .tim (text image) drawables support
-                    string s = cast(string)loadResourceBytes(id);
-                    if (s.length) {
-                        auto d = new TextDrawable(s);
-                        if (d.width && d.height) {
-                            return d;
-                        }
-                    }
-                } catch (Exception e) {
-                    // cannot find drawable file
-                }
-            }
         } else if (id.startsWith("#")) {
             // color reference #AARRGGBB, e.g. #5599AA, a gradient, border description, etc.
             return createColorDrawable(id);
-        } else if (id.startsWith("{")) {
-            // json in {} with text drawable description
-            static if (WIDGET_STYLE_CONSOLE) {
-               return createTextDrawable(id);
-            }
         } else {
-            static if (BACKEND_GUI) {
-                // PNG/JPEG drawables support
-                DrawBufRef image = transform.empty ? imageCache.get(id) : imageCache.get(id, transform);
-                if (!image.isNull) {
-                    bool ninePatch = id.endsWith(".9.png") ||  id.endsWith(".9.PNG");
-                    return new ImageDrawable(image, tiled, ninePatch);
-                } else
-                    Log.e("Failed to load image from ", id);
-            }
+            // PNG/JPEG drawables support
+            DrawBufRef image = transform.empty ? imageCache.get(id) : imageCache.get(id, transform);
+            if (!image.isNull) {
+                bool ninePatch = id.endsWith(".9.png") ||  id.endsWith(".9.PNG");
+                return new ImageDrawable(image, tiled, ninePatch);
+            } else
+                Log.e("Failed to load image from ", id);
         }
     }
     return null;

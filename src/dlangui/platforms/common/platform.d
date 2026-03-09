@@ -2003,10 +2003,8 @@ class Platform {
     void onThemeChanged() {
         // override and call dispatchThemeChange for all windows
         drawableCache.clear();
-        static if (!WIDGET_STYLE_CONSOLE) {
-            imageCache.checkpoint();
-            imageCache.cleanup();
-        }
+        imageCache.checkpoint();
+        imageCache.cleanup();
     }
 
     /// default icon for new created windows
@@ -2074,20 +2072,15 @@ static if (ENABLE_OPENGL) {
     }
 }
 
-static if (BACKEND_CONSOLE) {
+version (Windows) {
+    // to remove import
+    extern(Windows) int DLANGUIWinMain(void* hInstance, void* hPrevInstance,
+                                       char* lpCmdLine, int nCmdShow);
+    extern(Windows)
+        int DLANGUIWinMainProfile(string[] args);
+} else {
     // to remove import
     extern(C) int DLANGUImain(string[] args);
-} else {
-    version (Windows) {
-        // to remove import
-        extern(Windows) int DLANGUIWinMain(void* hInstance, void* hPrevInstance,
-                                           char* lpCmdLine, int nCmdShow);
-        extern(Windows)
-            int DLANGUIWinMainProfile(string[] args);
-    } else {
-        // to remove import
-        extern(C) int DLANGUImain(string[] args);
-    }
 }
 
 /// put "mixin APP_ENTRY_POINT;" to main module of your dlangui based app
@@ -2095,40 +2088,33 @@ mixin template APP_ENTRY_POINT() {
     version (unittest) {
         // no main in unit tests
     } else {
-        static if (BACKEND_CONSOLE) {
-            int main(string[] args)
-            {
-                return DLANGUImain(args);
-            }
-        } else {
-            /// workaround for link issue when WinMain is located in library
-            version(Windows) {
-                version (ENABLE_PROFILING) {
-                    int main(string[] args)
-                    {
-                        return DLANGUIWinMainProfile(args);
-                    }
-                } else {
-                    extern (Windows) int WinMain(void* hInstance, void* hPrevInstance,
-                                                    char* lpCmdLine, int nCmdShow)
-                    {
-                        try {
-                            int res = DLANGUIWinMain(hInstance, hPrevInstance,
-                                                        lpCmdLine, nCmdShow);
-                            return res;
-                        } catch (Exception e) {
-                            Log.e("Exception: ", e);
-                            return 1;
-                        }
-                    }
+        /// workaround for link issue when WinMain is located in library
+        version(Windows) {
+            version (ENABLE_PROFILING) {
+                int main(string[] args)
+                {
+                    return DLANGUIWinMainProfile(args);
                 }
             } else {
-                version (Android) {
-                } else {
-                    int main(string[] args)
-                    {
-                        return DLANGUImain(args);
+                extern (Windows) int WinMain(void* hInstance, void* hPrevInstance,
+                                                char* lpCmdLine, int nCmdShow)
+                {
+                    try {
+                        int res = DLANGUIWinMain(hInstance, hPrevInstance,
+                                                    lpCmdLine, nCmdShow);
+                        return res;
+                    } catch (Exception e) {
+                        Log.e("Exception: ", e);
+                        return 1;
                     }
+                }
+            }
+        } else {
+            version (Android) {
+            } else {
+                int main(string[] args)
+                {
+                    return DLANGUImain(args);
                 }
             }
         }

@@ -139,8 +139,7 @@ class DummyIconProvider : IconProviderBase
     }
 }
 
-static if (!WIDGET_STYLE_CONSOLE) {
-    version(Windows)
+version(Windows)
     {
         import core.sys.windows.windows;
         enum SHSTOCKICONID {
@@ -484,33 +483,31 @@ static if (!WIDGET_STYLE_CONSOLE) {
 
             DrawBufRef getIconFromTheme(string name, string context = null)
             {
-                static if (!WIDGET_STYLE_CONSOLE) {
-                    immutable extensions = [".svg",".png"];
-                    auto found = name in _cache;
-                    if (found) {
-                        return *found;
-                    }
-                    string iconPath;
-                    try {
-                        if (context.length) {
-                            // Take the context into account to reduce the number of searches.
-                            // In practice some icons that should be in Status context can be found in Places context for some icon themes.
-                            iconPath = findClosestIcon!(subdir => subdir.context == context || (context == "Status" && subdir.context == "Places"))(name, 32, _iconThemes, _baseIconDirs, extensions);
-                        } else {
-                            iconPath = findClosestIcon(name, 32, _iconThemes, _baseIconDirs, extensions);
-                        }
-                    } catch(Exception e) {
-                        Log.e("Error while searching for icon", name);
-                        Log.e(e);
-                    }
-
-                    if (iconPath.length) {
-                        auto image = DrawBufRef(loadImage(iconPath));
-                        _cache[name] = image;
-                        return image;
+                immutable extensions = [".svg",".png"];
+                auto found = name in _cache;
+                if (found) {
+                    return *found;
+                }
+                string iconPath;
+                try {
+                    if (context.length) {
+                        // Take the context into account to reduce the number of searches.
+                        // In practice some icons that should be in Status context can be found in Places context for some icon themes.
+                        iconPath = findClosestIcon!(subdir => subdir.context == context || (context == "Status" && subdir.context == "Places"))(name, 32, _iconThemes, _baseIconDirs, extensions);
                     } else {
-                        _cache[name] = DrawBufRef(null);
+                        iconPath = findClosestIcon(name, 32, _iconThemes, _baseIconDirs, extensions);
                     }
+                } catch(Exception e) {
+                    Log.e("Error while searching for icon", name);
+                    Log.e(e);
+                }
+
+                if (iconPath.length) {
+                    auto image = DrawBufRef(loadImage(iconPath));
+                    _cache[name] = image;
+                    return image;
+                } else {
+                    _cache[name] = DrawBufRef(null);
                 }
                 return DrawBufRef(null);
             }
@@ -613,6 +610,3 @@ static if (!WIDGET_STYLE_CONSOLE) {
     } else {
         alias DummyIconProvider NativeIconProvider;
     }
-} else { // !BACKEND_CONSOLE
-    alias DummyIconProvider NativeIconProvider;
-}

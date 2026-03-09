@@ -507,30 +507,23 @@ class FileDialog : Dialog, CustomGridCellAdapter {
                 sz.y = fnt.height;
             return sz;
         }
-        if (WIDGET_STYLE_CONSOLE)
+        DrawableRef icon = rowIcon(row);
+        if (icon.isNull)
             return Point(0, 0);
-        else {
-            DrawableRef icon = rowIcon(row);
-            if (icon.isNull)
-                return Point(0, 0);
-            return Point(icon.width + 2.pointsToPixels, icon.height + 2.pointsToPixels);
-        }
+        return Point(icon.width + 2.pointsToPixels, icon.height + 2.pointsToPixels);
     }
 
     /// draw data cell content
     override void drawCell(DrawBuf buf, Rect rc, int col, int row) {
         if (col == 1) {
-            if (BACKEND_GUI)
-                rc.shrink(2, 1);
-            else
-                rc.right--;
+            rc.shrink(2, 1);
             FontRef fnt = _fileList.font;
             dstring txt = _fileList.cellText(col, row);
             Point sz = fnt.textSize(txt);
             Align ha = Align.Left;
             //if (sz.y < rc.height)
             //    applyAlign(rc, sz, ha, Align.VCenter);
-            int offset = WIDGET_STYLE_CONSOLE ? 0 : 1;
+            int offset = 1;
             uint cl = _fileList.textColor;
             if (_entries[row].isDir)
                 cl = style.customColor("file_dialog_dir_name_color", cl);
@@ -554,7 +547,6 @@ class FileDialog : Dialog, CustomGridCellAdapter {
         WidgetListAdapter adapter = new WidgetListAdapter();
         foreach(ref RootEntry root; _roots) {
             ImageTextButton btn = new ImageTextButton(null, root.icon, root.label);
-            static if (WIDGET_STYLE_CONSOLE) btn.margins = Rect(1, 1, 0, 0);
             btn.orientation = Orientation.Vertical;
             btn.styleId = STYLE_TRANSPARENT_BUTTON_BACKGROUND;
             btn.focusable = false;
@@ -722,7 +714,7 @@ class FileDialog : Dialog, CustomGridCellAdapter {
 
         _roots = getRootPaths() ~ getBookmarkPaths();
 
-        layoutWidth(FILL_PARENT).layoutHeight(FILL_PARENT).minWidth(WIDGET_STYLE_CONSOLE ? 50 : 600);
+        layoutWidth(FILL_PARENT).layoutHeight(FILL_PARENT).minWidth(600);
         //minHeight = 400;
 
         LinearLayout content = new HorizontalLayout("dlgcontent");
@@ -732,10 +724,10 @@ class FileDialog : Dialog, CustomGridCellAdapter {
 
         //leftPanel = new VerticalLayout("places");
         //leftPanel.addChild(createRootsList());
-        //leftPanel.layoutHeight(FILL_PARENT).minWidth(WIDGET_STYLE_CONSOLE ? 7 : 40);
+
 
         leftPanel = createRootsList();
-        leftPanel.minWidth(WIDGET_STYLE_CONSOLE ? 7 : 40.pointsToPixels);
+        leftPanel.minWidth(40.pointsToPixels);
 
         rightPanel = new VerticalLayout("main");
         rightPanel.layoutHeight(FILL_PARENT).layoutWidth(FILL_PARENT);
@@ -1173,7 +1165,7 @@ class FileNameEditLine : HorizontalLayout {
         super(ID);
         _caption = UIString.fromId("TITLE_OPEN_FILE"c).value;
         _edFileName = new EditLine("FileNameEditLine_edFileName");
-        _edFileName.minWidth(WIDGET_STYLE_CONSOLE ? 16 : 200);
+        _edFileName.minWidth(200);
         _edFileName.layoutWidth = FILL_PARENT;
         _btn = new Button("FileNameEditLine_btnFile", "..."d);
         _btn.styleId = STYLE_BUTTON_NOMARGINS;

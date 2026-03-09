@@ -355,23 +355,16 @@ private __gshared int PRIVATE_SCREEN_DPI_OVERRIDE = 0;
 
 /// call to disable automatic screen DPI detection, use provided one instead (pass 0 to disable override and use value detected by platform)
 @property void overrideScreenDPI(int dpi = 96) {
-    static if (WIDGET_STYLE_CONSOLE) {
-    } else {
-        if ((dpi >= 72 && dpi <= 500) || dpi == 0)
-            PRIVATE_SCREEN_DPI_OVERRIDE = dpi;
-    }
+    if ((dpi >= 72 && dpi <= 500) || dpi == 0)
+        PRIVATE_SCREEN_DPI_OVERRIDE = dpi;
 }
 
 /// set screen DPI detected by platform
 @property void SCREEN_DPI(int dpi) {
-    static if (WIDGET_STYLE_CONSOLE) {
-        PRIVATE_SCREEN_DPI = dpi;
-    } else {
-        if (dpi >= 72 && dpi <= 500) {
-            if (PRIVATE_SCREEN_DPI != dpi) {
-                // changed DPI
-                PRIVATE_SCREEN_DPI = dpi;
-            }
+    if (dpi >= 72 && dpi <= 500) {
+        if (PRIVATE_SCREEN_DPI != dpi) {
+            // changed DPI
+            PRIVATE_SCREEN_DPI = dpi;
         }
     }
 }

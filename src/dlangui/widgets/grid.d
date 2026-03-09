@@ -1089,7 +1089,7 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
         if (y >= _rowCumulativeHeights[_headerRows - 1])
             return -1; // not in header row
         // point is somewhere in header row
-        int resizeRange = BACKEND_GUI ? 4.pointsToPixels : 1;
+        int resizeRange = 4.pointsToPixels;
         if (x >= nonScrollAreaPixels.x)
             x += _scrollX;
         int col = colByAbsoluteX(x);
@@ -1649,9 +1649,7 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
                     if (!colVisible(x))
                         continue;
                     Rect cellRect = cellRectScroll(x, y);
-                    if (WIDGET_STYLE_CONSOLE && phase == 1) {
-                        cellRect.right--;
-                    }
+
                     Rect clippedCellRect = cellRect;
                     if (x >= nscols && cellRect.left < nspixels.x)
                         clippedCellRect.left = nspixels.x; // clip scrolled left
@@ -1703,7 +1701,7 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
 
     protected Point measureCell(int x, int y) {
         // override it!
-        return Point(WIDGET_STYLE_CONSOLE ? 5 : 80, WIDGET_STYLE_CONSOLE ? 1 : 20);
+        return Point(80, 20);
     }
 
     protected int measureColWidth(int x) {
@@ -1716,13 +1714,8 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
                 m = sz.x;
         }
         //Log.d("measureColWidth ", x, " = ", m);
-        static if (BACKEND_GUI) {
-            if (m < 10)
-                m = 10; // TODO: use min size
-        } else {
-            if (m < 1)
-                m = 1; // TODO: use min size
-        }
+        if (m < 10)
+            m = 10; // TODO: use min size
         return m;
     }
 
@@ -1733,15 +1726,13 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
             if (m < sz.y)
                 m = sz.y;
         }
-        static if (BACKEND_GUI) {
-            if (m < 12)
-                m = 12; // TODO: use min size
-        }
+        if (m < 12)
+            m = 12; // TODO: use min size
         return m;
     }
 
     void autoFitColumnWidth(int i) {
-        _colWidths[i] = (i < _headerCols && !_showRowHeaders) ? 0 : measureColWidth(i) + (WIDGET_STYLE_CONSOLE ? 1 : 3.pointsToPixels);
+        _colWidths[i] = (i < _headerCols && !_showRowHeaders) ? 0 : measureColWidth(i) + 3.pointsToPixels;
         _changedSize = true;
     }
 
@@ -1765,7 +1756,7 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
     }
 
     void autoFitRowHeight(int i) {
-        _rowHeights[i] = (i < _headerRows && !_showColHeaders) ? 0 : measureRowHeight(i) + (WIDGET_STYLE_CONSOLE ? 0 : 2);
+        _rowHeights[i] = (i < _headerRows && !_showColHeaders) ? 0 : measureRowHeight(i) + 2;
         _changedSize = true;
     }
 
@@ -1785,8 +1776,8 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
         _headerCols = 1;
         _headerRows = 1;
         _selection = new RedBlackTree!Point();
-        _defRowHeight = WIDGET_STYLE_CONSOLE ? 1 : pointsToPixels(16);
-        _defColumnWidth = WIDGET_STYLE_CONSOLE ? 7 : 100;
+        _defRowHeight = pointsToPixels(16);
+        _defColumnWidth = 100;
 
         _showColHeaders = true;
         _showRowHeaders = true;
@@ -1973,26 +1964,20 @@ class StringGridWidget : StringGridWidgetBase {
         if (_customCellAdapter && _customCellAdapter.isCustomCell(col, row)) {
             return _customCellAdapter.drawCell(buf, rc, col, row);
         }
-        if (BACKEND_GUI)
-            rc.shrink(2, 1);
-        else
-            rc.right--;
+        rc.shrink(2, 1);
         FontRef fnt = font;
         dstring txt = cellText(col, row);
         Point sz = fnt.textSize(txt);
         Align ha = Align.Left;
         //if (sz.y < rc.height)
         //    applyAlign(rc, sz, ha, Align.VCenter);
-        int offset = WIDGET_STYLE_CONSOLE ? 0 : 1;
+        int offset = 1;
         fnt.drawText(buf, rc.left + offset, rc.top + offset, txt, textColor);
     }
 
     /// draw cell content
     protected override void drawHeaderCell(DrawBuf buf, Rect rc, int col, int row) {
-        if (BACKEND_GUI)
-            rc.shrink(2, 1);
-        else
-            rc.right--;
+        rc.shrink(2, 1);
         FontRef fnt = font;
         dstring txt;
         if (row < 0 && col >= 0)
@@ -2008,7 +1993,7 @@ class StringGridWidget : StringGridWidgetBase {
         //if (row < 0)
         //    ha = Align.HCenter;
         applyAlign(rc, sz, ha, Align.VCenter);
-        int offset = WIDGET_STYLE_CONSOLE ? 0 : 1;
+        int offset = 1;
         uint cl = textColor;
         cl = style.customColor("grid_cell_text_color_header", cl);
         fnt.drawText(buf, rc.left + offset, rc.top + offset, txt, cl);
@@ -2040,11 +2025,9 @@ class StringGridWidget : StringGridWidgetBase {
             dw.drawTo(buf, rc);
         else
             buf.fillRect(rc, cl);
-        static if (BACKEND_GUI) {
-            uint borderColor = _cellHeaderBorderColor;
-            buf.drawLine(Point(rc.right - 1, rc.bottom), Point(rc.right - 1, rc.top), _cellHeaderBorderColor); // vertical
-            buf.drawLine(Point(rc.left, rc.bottom - 1), Point(rc.right - 1, rc.bottom - 1), _cellHeaderBorderColor); // horizontal
-        }
+        uint borderColor = _cellHeaderBorderColor;
+        buf.drawLine(Point(rc.right - 1, rc.bottom), Point(rc.right - 1, rc.top), _cellHeaderBorderColor); // vertical
+        buf.drawLine(Point(rc.left, rc.bottom - 1), Point(rc.right - 1, rc.bottom - 1), _cellHeaderBorderColor); // horizontal
     }
 
     /// draw cell background
@@ -2063,22 +2046,13 @@ class StringGridWidget : StringGridWidgetBase {
             buf.fillRect(rc, _fixedCellBackgroundColor);
             borderColor = _fixedCellBorderColor;
         }
-        static if (BACKEND_GUI) {
-            buf.drawLine(Point(rc.left, rc.bottom + 1), Point(rc.left, rc.top), borderColor); // vertical
-            buf.drawLine(Point(rc.left, rc.bottom - 1), Point(rc.right - 1, rc.bottom - 1), borderColor); // horizontal
-        }
+        buf.drawLine(Point(rc.left, rc.bottom + 1), Point(rc.left, rc.top), borderColor); // vertical
+        buf.drawLine(Point(rc.left, rc.bottom - 1), Point(rc.right - 1, rc.bottom - 1), borderColor); // horizontal
         if (selectedCell) {
-            static if (BACKEND_GUI) {
-                if (_rowSelect)
-                    buf.drawFrame(rc, _selectionColorRowSelect, Rect(0,1,0,1), _cellBorderColor);
-                else
-                    buf.drawFrame(rc, _selectionColor, Rect(1,1,1,1), _cellBorderColor);
-            } else {
-                if (_rowSelect)
-                    buf.fillRect(rc, _selectionColorRowSelect);
-                else
-                    buf.fillRect(rc, _selectionColor);
-            }
+            if (_rowSelect)
+                buf.drawFrame(rc, _selectionColorRowSelect, Rect(0,1,0,1), _cellBorderColor);
+            else
+                buf.drawFrame(rc, _selectionColor, Rect(1,1,1,1), _cellBorderColor);
         }
     }
 
