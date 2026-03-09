@@ -128,23 +128,6 @@
                 "icontheme": "~>1.2.3",
                 "glx-d": "~>1.1.0"
             }
-        },
-        {
-            "name": "sfml",
-            "versions": ["USE_DSFML", "USE_OPENGL", "USE_FREETYPE", "EmbedStandardResources", "GL_32"],
-            "versions-windows": ["Unicode"],
-            "dependencies": {
-                "bindbc-opengl": "~>1.1.0",
-                "bindbc-freetype": "~>1.2.4",
-                "dsfml": "~>2.1.0",
-                "icontheme": "~>1.2.3"
-            },
-            "copyFiles-windows-x86_64": [
-                "libs/windows/x86_64/libfreetype-6.dll"
-            ],
-            "copyFiles-windows-x86": [
-                "libs/windows/x86/libfreetype-6.dll"
-            ]
         }
     ]
 }

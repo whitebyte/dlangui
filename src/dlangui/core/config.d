@@ -15,7 +15,6 @@ version(USE_CONSOLE) {
     enum BACKEND_GUI = false;
     enum BACKEND_SDL = false;
     enum BACKEND_X11 = false;
-    enum BACKEND_DSFML = false;
     enum BACKEND_WIN32 = false;
     enum BACKEND_ANDROID = false;
 } else {
@@ -55,7 +54,6 @@ version(USE_CONSOLE) {
         }
         enum BACKEND_SDL = true;
         enum BACKEND_X11 = false;
-        enum BACKEND_DSFML = false;
         enum BACKEND_WIN32 = false;
         enum BACKEND_ANDROID = false;
         enum BACKEND_CONSOLE = false;
@@ -68,7 +66,6 @@ version(USE_CONSOLE) {
         }
         enum BACKEND_SDL = false;
         enum BACKEND_X11 = false;
-        enum BACKEND_DSFML = false;
         enum BACKEND_WIN32 = false;
         enum BACKEND_ANDROID = true;
         enum BACKEND_CONSOLE = false;
@@ -85,7 +82,6 @@ version(USE_CONSOLE) {
         }
         enum BACKEND_SDL = false;
         enum BACKEND_X11 = true;
-        enum BACKEND_DSFML = false;
         enum BACKEND_WIN32 = false;
         enum BACKEND_CONSOLE = false;
     } else version (USE_WIN32) {
@@ -101,21 +97,7 @@ version(USE_CONSOLE) {
         }
         enum BACKEND_SDL = false;
         enum BACKEND_X11 = false;
-        enum BACKEND_DSFML = false;
         enum BACKEND_WIN32 = true;
-        enum BACKEND_ANDROID = false;
-        enum BACKEND_CONSOLE = false;
-    } else version (USE_DSFML) {
-        // DSFML backend already selected using version identifier
-        //version (USE_OPENGL) {
-            enum ENABLE_OPENGL = true;
-        //} else {
-        //    enum ENABLE_OPENGL = false;
-        //}
-        enum BACKEND_SDL = false;
-        enum BACKEND_X11 = false;
-        enum BACKEND_DSFML = true;
-        enum BACKEND_WIN32 = false;
         enum BACKEND_ANDROID = false;
         enum BACKEND_CONSOLE = false;
     } else version (USE_EXTERNAL) {
@@ -132,7 +114,6 @@ version(USE_CONSOLE) {
             }
             enum BACKEND_SDL = false;
             enum BACKEND_X11 = false;
-            enum BACKEND_DSFML = false;
             enum BACKEND_WIN32 = true;
             enum BACKEND_ANDROID = false;
             enum BACKEND_CONSOLE = false;
@@ -141,7 +122,6 @@ version(USE_CONSOLE) {
             enum ENABLE_OPENGL = true;
             enum BACKEND_SDL = true;
             enum BACKEND_X11 = false;
-            enum BACKEND_DSFML = false;
             enum BACKEND_WIN32 = false;
             enum BACKEND_ANDROID = true;
             enum BACKEND_CONSOLE = false;
@@ -154,7 +134,6 @@ version(USE_CONSOLE) {
             }
             enum BACKEND_SDL = true;
             enum BACKEND_X11 = false;
-            enum BACKEND_DSFML = false;
             enum BACKEND_WIN32 = false;
             enum BACKEND_ANDROID = false;
             enum BACKEND_CONSOLE = false;
@@ -167,7 +146,6 @@ version(USE_CONSOLE) {
             }
             enum BACKEND_SDL = true;
             enum BACKEND_X11 = false;
-            enum BACKEND_DSFML = false;
             enum BACKEND_WIN32 = false;
             enum BACKEND_ANDROID = false;
             enum BACKEND_CONSOLE = false;
@@ -180,7 +158,6 @@ version(USE_CONSOLE) {
             }
             enum BACKEND_SDL = true;
             enum BACKEND_X11 = false;
-            enum BACKEND_DSFML = false;
             enum BACKEND_WIN32 = false;
             enum BACKEND_ANDROID = false;
             enum BACKEND_CONSOLE = false;
