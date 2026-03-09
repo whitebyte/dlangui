@@ -34,7 +34,7 @@
     "dependencies": {
         "inilike": "~>1.2.3",
         "icontheme": "~>1.2.3",
-        "arsd-official:dom": "~>11.5.3",
+        "dxml": "~>0.4.4",
         "arsd-official:image_files": "~>11.5.3"
     },
 

@@ -25,7 +25,7 @@ module dlangui.widgets.styles;
 
 import dlangui.core.config;
 
-import arsd.dom;
+import dxml.dom;
 import std.string;
 import std.algorithm;
 
@@ -1455,76 +1455,56 @@ string sanitizeBoxShadowProperty(string s) pure {
 }
 
 /// load style attributes from XML element
-bool loadStyleAttributes(Style style, Element elem, bool allowStates) {
-    //Log.d("Theme: loadStyleAttributes ", style.id, " ", elem.tag.attr);
-    if ("backgroundImageId" in elem.attributes)
-        style.backgroundImageId = elem.attrs["backgroundImageId"];
-    if ("backgroundColor" in elem.attributes)
-        style.backgroundColor = decodeHexColor(elem.attrs["backgroundColor"]);
-    if ("textColor" in elem.attributes)
-        style.textColor = decodeHexColor(elem.attrs["textColor"]);
-    if ("margins" in elem.attributes)
-        style.margins = decodeRect(elem.attrs["margins"]);
-    if ("padding" in elem.attributes)
-        style.padding = decodeRect(elem.attrs["padding"]);
-    if ("border" in elem.attributes)
-        style.border = sanitizeBorderProperty(elem.attrs["border"]);
-    if ("boxShadow" in elem.attributes)
-        style.boxShadow = sanitizeBoxShadowProperty(elem.attrs["boxShadow"]);
-    if ("align" in elem.attributes)
-        style.alignment = decodeAlignment(elem.attrs["align"]);
-    if ("minWidth" in elem.attributes)
-        style.minWidth = decodeDimension(elem.attrs["minWidth"]);
-    if ("maxWidth" in elem.attributes)
-        style.maxWidth = decodeDimension(elem.attrs["maxWidth"]);
-    if ("minHeight" in elem.attributes)
-        style.minHeight = decodeDimension(elem.attrs["minHeight"]);
-    if ("maxHeight" in elem.attributes)
-        style.maxHeight = decodeDimension(elem.attrs["maxHeight"]);
-    if ("maxLines" in elem.attributes)
-        style.maxLines = decodeDimension(elem.attrs["maxLines"]);
-    if ("fontFace" in elem.attributes)
-        style.fontFace = elem.attrs["fontFace"];
-    if ("fontFamily" in elem.attributes)
-        style.fontFamily = decodeFontFamily(elem.attrs["fontFamily"]);
-    if ("fontSize" in elem.attributes)
-        style.fontSize = cast(int)decodeDimension(elem.attrs["fontSize"]);
-    if ("fontWeight" in elem.attributes)
-        style.fontWeight = cast(ushort)decodeFontWeight(elem.attrs["fontWeight"]);
-    if ("layoutWidth" in elem.attributes)
-        style.layoutWidth = decodeLayoutDimension(elem.attrs["layoutWidth"]);
-    if ("layoutHeight" in elem.attributes)
-        style.layoutHeight = decodeLayoutDimension(elem.attrs["layoutHeight"]);
-    if ("alpha" in elem.attributes)
-        style.alpha = decodeDimension(elem.attrs["alpha"]);
-    if ("textFlags" in elem.attributes)
-        style.textFlags = decodeTextFlags(elem.attrs["textFlags"]);
-    if ("focusRectColors" in elem.attributes)
-        style.focusRectColors = decodeFocusRectColors(elem.attrs["focusRectColors"]);
-    foreach(item; elem.childNodes) {
-        if (allowStates && item.tagName.equal("state")) {
+bool loadStyleAttributes(Style style, DOMEntity!string elem, bool allowStates) {
+    if (auto v = attrValue(elem, "backgroundImageId")) style.backgroundImageId = v;
+    if (auto v = attrValue(elem, "backgroundColor")) style.backgroundColor = decodeHexColor(v);
+    if (auto v = attrValue(elem, "textColor")) style.textColor = decodeHexColor(v);
+    if (auto v = attrValue(elem, "margins")) style.margins = decodeRect(v);
+    if (auto v = attrValue(elem, "padding")) style.padding = decodeRect(v);
+    if (auto v = attrValue(elem, "border")) style.border = sanitizeBorderProperty(v);
+    if (auto v = attrValue(elem, "boxShadow")) style.boxShadow = sanitizeBoxShadowProperty(v);
+    if (auto v = attrValue(elem, "align")) style.alignment = decodeAlignment(v);
+    if (auto v = attrValue(elem, "minWidth")) style.minWidth = decodeDimension(v);
+    if (auto v = attrValue(elem, "maxWidth")) style.maxWidth = decodeDimension(v);
+    if (auto v = attrValue(elem, "minHeight")) style.minHeight = decodeDimension(v);
+    if (auto v = attrValue(elem, "maxHeight")) style.maxHeight = decodeDimension(v);
+    if (auto v = attrValue(elem, "maxLines")) style.maxLines = decodeDimension(v);
+    if (auto v = attrValue(elem, "fontFace")) style.fontFace = v;
+    if (auto v = attrValue(elem, "fontFamily")) style.fontFamily = decodeFontFamily(v);
+    if (auto v = attrValue(elem, "fontSize")) style.fontSize = cast(int)decodeDimension(v);
+    if (auto v = attrValue(elem, "fontWeight")) style.fontWeight = cast(ushort)decodeFontWeight(v);
+    if (auto v = attrValue(elem, "layoutWidth")) style.layoutWidth = decodeLayoutDimension(v);
+    if (auto v = attrValue(elem, "layoutHeight")) style.layoutHeight = decodeLayoutDimension(v);
+    if (auto v = attrValue(elem, "alpha")) style.alpha = decodeDimension(v);
+    if (auto v = attrValue(elem, "textFlags")) style.textFlags = decodeTextFlags(v);
+    if (auto v = attrValue(elem, "focusRectColors")) style.focusRectColors = decodeFocusRectColors(v);
+    if (elem.type != EntityType.elementStart)
+        return true;
+    foreach(item; elem.children) {
+        if (item.type != EntityType.elementStart && item.type != EntityType.elementEmpty)
+            continue;
+        if (allowStates && item.name.equal("state")) {
             uint stateMask = 0;
             uint stateValue = 0;
-            extractStateFlags(item.attrs, stateMask, stateValue);
+            extractStateFlags(item, stateMask, stateValue);
             if (stateMask) {
                 Style state = style.getOrCreateState(stateMask, stateValue);
-                Log.d(item.attributes);
                 loadStyleAttributes(state, item, false);
             }
-        } else if (item.tagName.equal("drawable")) {
+        } else if (item.name.equal("drawable")) {
             // <drawable id="scrollbar_button_up" value="scrollbar_btn_up"/>
             string drawableid = attrValue(item, "id");
             string drawablevalue = attrValue(item, "value");
             if (drawableid)
                 style.setCustomDrawable(drawableid, drawablevalue);
-        } else if (item.tagName.equal("color")) {
+        } else if (item.name.equal("color")) {
             // <color id="buttons_panel_color" value="#303080"/>
             string colorid = attrValue(item, "id");
             string colorvalue = attrValue(item, "value");
             uint color = decodeHexColor(colorvalue, COLOR_TRANSPARENT);
             if (colorid)
                 style.setCustomColor(colorid, color);
-        } else if (item.tagName.equal("length")) {
+        } else if (item.name.equal("length")) {
             // <length id="overlap" value="2"/>
             string lenid = attrValue(item, "id");
             string lenvalue = attrValue(item, "value");
@@ -1551,23 +1531,26 @@ bool loadStyleAttributes(Style style, Element elem, bool allowStates) {
  * ---
  *
  */
-bool loadTheme(Theme theme, XmlDocument doc, int level = 0) {
-    if (!doc.root.tagName.equal("theme")) {
+bool loadTheme(Theme theme, DOMEntity!string doc, int level = 0) {
+    auto root = doc.children[0];
+    if (!root.name.equal("theme")) {
         Log.e("<theme> element should be main in theme file!");
         return false;
     }
     // <theme>
-    string id = attrValue(doc.root, "id");
-    string parent = attrValue(doc.root, "parent");
+    string id = attrValue(root, "id");
+    string parent = attrValue(root, "parent");
     theme.id = id;
     if (parent.length > 0) {
         // load base theme
         if (level < 3) // to prevent infinite recursion
             loadTheme(theme, parent, level + 1);
     }
-    loadStyleAttributes(theme, doc.root, false);
-    foreach(styleitem; doc.root.childNodes) {
-        if (styleitem.tagName.equal("style")) {
+    loadStyleAttributes(theme, root, false);
+    foreach(styleitem; root.children) {
+        if (styleitem.type != EntityType.elementStart && styleitem.type != EntityType.elementEmpty)
+            continue;
+        if (styleitem.name.equal("style")) {
             // load <style>
             string styleid = attrValue(styleitem, "id");
             string styleparent = attrValue(styleitem, "parent");
@@ -1605,7 +1588,7 @@ bool loadTheme(Theme theme, string resourceId, int level = 0) {
         //check(s);
 
         // Make a DOM tree
-        auto doc = new XmlDocument(s);
+        auto doc = parseDOM(s);
 
         return loadTheme(theme, doc);
     } catch (Exception e) {

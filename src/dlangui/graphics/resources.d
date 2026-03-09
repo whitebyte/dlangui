@@ -99,7 +99,7 @@ import dlangui.graphics.colors;
 import dlangui.graphics.drawbuf;
 import std.file;
 import std.algorithm;
-import arsd.dom;
+import dxml.dom;
 import std.conv;
 import std.string;
 import std.path;
@@ -748,20 +748,20 @@ class ImageDrawable : Drawable {
     }
 }
 
-string attrValue(Element item, string attrname, string attrname2 = null) {
-    return attrValue(item.attrs, attrname, attrname2);
-}
-
-string attrValue(AttributeSet attr, string attrname, string attrname2 = null) {
-    if (attr.get(attrname) !is null) // TODO_GRIM: Add support of in to arsd.dom?
-        return attr.get(attrname);
-    if (attrname2 !is null && attr.get(attrname2) !is null)
-        return attr.get(attrname2);
+string attrValue(DOMEntity!string item, string attrname, string attrname2 = null) {
+    foreach (ref a; item.attributes) {
+        if (a.name == attrname) return a.value;
+    }
+    if (attrname2 !is null) {
+        foreach (ref a; item.attributes) {
+            if (a.name == attrname2) return a.value;
+        }
+    }
     return null;
 }
 
-void extractStateFlag(ref AttributeSet attr, string attrName, string attrName2, State state, ref uint stateMask, ref uint stateValue) {
-    string value = attrValue(attr, attrName, attrName2);
+void extractStateFlag(DOMEntity!string item, string attrName, string attrName2, State state, ref uint stateMask, ref uint stateValue) {
+    string value = attrValue(item, attrName, attrName2);
     if (value !is null) {
         if (value.equal("true"))
             stateValue |= state;
@@ -770,17 +770,17 @@ void extractStateFlag(ref AttributeSet attr, string attrName, string attrName2, 
 }
 
 /// converts XML attribute name to State (see http://developer.android.com/guide/topics/resources/drawable-resource.html#StateList)
-void extractStateFlags(AttributeSet attr, ref uint stateMask, ref uint stateValue) {
-    extractStateFlag(attr, "state_pressed", "android:state_pressed", State.Pressed, stateMask, stateValue);
-    extractStateFlag(attr, "state_focused", "android:state_focused", State.Focused, stateMask, stateValue);
-    extractStateFlag(attr, "state_default", "android:state_default", State.Default, stateMask, stateValue);
-    extractStateFlag(attr, "state_hovered", "android:state_hovered", State.Hovered, stateMask, stateValue);
-    extractStateFlag(attr, "state_selected", "android:state_selected", State.Selected, stateMask, stateValue);
-    extractStateFlag(attr, "state_checkable", "android:state_checkable", State.Checkable, stateMask, stateValue);
-    extractStateFlag(attr, "state_checked", "android:state_checked", State.Checked, stateMask, stateValue);
-    extractStateFlag(attr, "state_enabled", "android:state_enabled", State.Enabled, stateMask, stateValue);
-    extractStateFlag(attr, "state_activated", "android:state_activated", State.Activated, stateMask, stateValue);
-    extractStateFlag(attr, "state_window_focused", "android:state_window_focused", State.WindowFocused, stateMask, stateValue);
+void extractStateFlags(DOMEntity!string item, ref uint stateMask, ref uint stateValue) {
+    extractStateFlag(item, "state_pressed", "android:state_pressed", State.Pressed, stateMask, stateValue);
+    extractStateFlag(item, "state_focused", "android:state_focused", State.Focused, stateMask, stateValue);
+    extractStateFlag(item, "state_default", "android:state_default", State.Default, stateMask, stateValue);
+    extractStateFlag(item, "state_hovered", "android:state_hovered", State.Hovered, stateMask, stateValue);
+    extractStateFlag(item, "state_selected", "android:state_selected", State.Selected, stateMask, stateValue);
+    extractStateFlag(item, "state_checkable", "android:state_checkable", State.Checkable, stateMask, stateValue);
+    extractStateFlag(item, "state_checked", "android:state_checked", State.Checked, stateMask, stateValue);
+    extractStateFlag(item, "state_enabled", "android:state_enabled", State.Enabled, stateMask, stateValue);
+    extractStateFlag(item, "state_activated", "android:state_activated", State.Activated, stateMask, stateValue);
+    extractStateFlag(item, "state_window_focused", "android:state_window_focused", State.WindowFocused, stateMask, stateValue);
 }
 
 /*
@@ -908,9 +908,13 @@ class StateDrawable : Drawable {
         return (nn[0] << 24) | (nn[1] << 16) | (nn[2] << 8) | (nn[3] << 0);
     }
 
-    bool load(XmlDocument document) {
-        foreach(item; document.root.children) {
-            if (item.tagName.equal("item")) {
+    bool load(DOMEntity!string document) {
+        auto root = document.children[0];
+        if (root.type != EntityType.elementStart)
+            return false;
+        foreach(item; root.children) {
+            if ((item.type == EntityType.elementStart || item.type == EntityType.elementEmpty)
+                    && item.name.equal("item")) {
                 string drawableId = attrValue(item, "drawable", "android:drawable");
                 if (drawableId.startsWith("@drawable/"))
                     drawableId = drawableId[10 .. $];
@@ -920,10 +924,8 @@ class StateDrawable : Drawable {
                 transform.addAfter = colorTransformFromStringAdd(attrValue(item, "color_transform_add2", "android:transform_color_add2"));
                 if (drawableId !is null) {
                     uint stateMask, stateValue;
-                    extractStateFlags(item.attrs, stateMask, stateValue);
-                    if (drawableId !is null) {
-                        addState(stateMask, stateValue, drawableId, transform);
-                    }
+                    extractStateFlags(item, stateMask, stateValue);
+                    addState(stateMask, stateValue, drawableId, transform);
                 }
             }
         }
@@ -939,11 +941,8 @@ class StateDrawable : Drawable {
                 return false;
             }
 
-            // Check for well-formedness
-            //check(s);
-
             // Make a DOM tree
-            auto doc = new XmlDocument(s);
+            auto doc = parseDOM(s);
 
             return load(doc);
         } catch (Exception e) {
