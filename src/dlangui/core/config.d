@@ -2,19 +2,6 @@ module dlangui.core.config;
 
 extern(C) @property dstring DLANGUI_VERSION();
 
-
-version (NO_FREETYPE) {
-    enum ENABLE_FREETYPE = false;
-} else version (USE_FREETYPE) {
-    enum ENABLE_FREETYPE = true;
-} else {
-    version (Windows) {
-        enum ENABLE_FREETYPE = false;
-    } else {
-        enum ENABLE_FREETYPE = true;
-    }
-}
-
 // provide default configuration definitions
 version (USE_SDL) {
     // SDL backend already selected using version identifier

@@ -10,7 +10,6 @@ Authors:   Vadim Lopatin, coolreader.org@gmail.com
 module dlangui.graphics.ftfonts;
 
 import dlangui.core.config;
-static if (ENABLE_FREETYPE):
 
 import dlangui.graphics.fonts;
 

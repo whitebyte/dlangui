@@ -26,8 +26,7 @@ version (Windows) {
         import dlangui.platforms.windows.win32fonts;
         try {
             /// testing freetype font manager
-            static if (ENABLE_FREETYPE) {
-                Log.v("Trying to init FreeType font manager");
+            Log.v("Trying to init FreeType font manager");
 
                 import dlangui.graphics.ftfonts;
                 // trying to create font manager
@@ -175,7 +174,6 @@ version (Windows) {
                     Log.w("No fonts registered in FreeType font manager. Disabling FreeType.");
                     destroy(ftfontMan);
                 }
-            }
         } catch (Exception e) {
             Log.e("Cannot create FreeTypeFontManager - falling back to win32");
         }
@@ -337,29 +335,27 @@ extern (C) void initResourceManagers() {
     import dlangui.graphics.fonts;
     _gamma65 = new glyph_gamma_table!65(1.0);
     _gamma256 = new glyph_gamma_table!256(1.0);
-    static if (ENABLE_FREETYPE) {
-        import dlangui.graphics.ftfonts;
-        STD_FONT_FACES = [
-            "Arial": 12,
-            "Times New Roman": 12,
-            "Courier New": 10,
-            "DejaVu Serif": 10,
-            "DejaVu Sans": 10,
-            "DejaVu Sans Mono": 10,
-            "Liberation Serif": 11,
-            "Liberation Sans": 11,
-            "Liberation Mono": 11,
-            "Verdana": 10,
-            "Menlo": 13,
-            "Consolas": 12,
-            "DejaVuSansMono": 10,
-            "Lucida Sans Typewriter": 10,
-            "Lucida Console": 12,
-            "FreeMono": 8,
-            "FreeSans": 8,
-            "FreeSerif": 8,
-        ];
-    }
+    import dlangui.graphics.ftfonts;
+    STD_FONT_FACES = [
+        "Arial": 12,
+        "Times New Roman": 12,
+        "Courier New": 10,
+        "DejaVu Serif": 10,
+        "DejaVu Sans": 10,
+        "DejaVu Sans Mono": 10,
+        "Liberation Serif": 11,
+        "Liberation Sans": 11,
+        "Liberation Mono": 11,
+        "Verdana": 10,
+        "Menlo": 13,
+        "Consolas": 12,
+        "DejaVuSansMono": 10,
+        "Lucida Sans Typewriter": 10,
+        "Lucida Console": 12,
+        "FreeMono": 8,
+        "FreeSans": 8,
+        "FreeSerif": 8,
+    ];
     static if (ENABLE_OPENGL) {
         import dlangui.graphics.gldrawbuf;
         initGLCaches();
@@ -440,14 +436,12 @@ extern (C) void releaseResourcesOnAppExit() {
         if (Drawable.instanceCount > 0) {
             Log.e("Non-zero Drawable instance count when exiting: ", Drawable.instanceCount);
         }
-        static if (ENABLE_FREETYPE) {
-            import dlangui.graphics.ftfonts;
-            if (FreeTypeFontFile.instanceCount > 0) {
-                Log.e("Non-zero FreeTypeFontFile instance count when exiting: ", FreeTypeFontFile.instanceCount);
-            }
-            if (FreeTypeFont.instanceCount > 0) {
-                Log.e("Non-zero FreeTypeFont instance count when exiting: ", FreeTypeFont.instanceCount);
-            }
+        import dlangui.graphics.ftfonts;
+        if (FreeTypeFontFile.instanceCount > 0) {
+            Log.e("Non-zero FreeTypeFontFile instance count when exiting: ", FreeTypeFontFile.instanceCount);
+        }
+        if (FreeTypeFont.instanceCount > 0) {
+            Log.e("Non-zero FreeTypeFont instance count when exiting: ", FreeTypeFont.instanceCount);
         }
     }
 }

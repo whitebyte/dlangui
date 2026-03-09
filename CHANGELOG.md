@@ -18,3 +18,6 @@
 - 
   arsd v12+ targets the opend compiler fork and is no longer maintained for mainline DMD. 
 
+### Font rendering - Freetype is always enabled
+
+In 2015 Win32 GDI fallback made sense. In 2026, I don't think so.
