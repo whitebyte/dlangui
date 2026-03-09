@@ -34,9 +34,13 @@
     "dependencies": {
         "inilike": "~>1.2.3",
         "icontheme": "~>1.2.3",
-        "dxml": "~>0.4.4",
-        "arsd-official:image_files": "~>11.5.3"
+        "dxml": "~>0.4.4"
     },
+
+    "preBuildCommands-posix": ["cc -c -O2 -o $PACKAGE_DIR/3rdparty/stb_image_impl.o $PACKAGE_DIR/3rdparty/stb_image_impl.c"],
+    "preBuildCommands-windows": ["cl /c /O2 /Fo%PACKAGE_DIR%\\3rdparty\\stb_image_impl.obj %PACKAGE_DIR%\\3rdparty\\stb_image_impl.c"],
+    "sourceFiles-posix": ["$PACKAGE_DIR/3rdparty/stb_image_impl.o"],
+    "sourceFiles-windows": ["$PACKAGE_DIR/3rdparty/stb_image_impl.obj"],
 
     "subPackages": [
         "./examples/helloworld/",

@@ -23,7 +23,7 @@ module dlangui.graphics.images;
 public import dlangui.core.config;
 static if (BACKEND_GUI):
 
-import arsd.image;
+import stb_image;
 
 import dlangui.core.logger;
 import dlangui.core.types;
@@ -64,15 +64,19 @@ ColorDrawBuf loadImage(immutable ubyte[] data, string filename) {
         }
     }
 
-    auto image = loadImageFromMemory(data);
-    ColorDrawBuf buf = new ColorDrawBuf(image.width, image.height);
-    for(int j = 0; j < buf.height; j++)
-    {
+    int w, h, channels;
+    ubyte* pixels = stbi_load_from_memory(data.ptr, cast(int)data.length, &w, &h, &channels, 4);
+    if (!pixels) {
+        Log.e("stb_image: failed to decode ", filename);
+        return null;
+    }
+    scope(exit) stbi_image_free(pixels);
+    ColorDrawBuf buf = new ColorDrawBuf(w, h);
+    for (int j = 0; j < h; j++) {
         auto scanLine = buf.scanLine(j);
-        for(int i = 0; i < buf.width; i++)
-        {
-            auto color = image.getPixel(i, j);
-            scanLine[i] = makeRGBA(color.r, color.g, color.b, 255 - color.a);
+        for (int i = 0; i < w; i++) {
+            ubyte* p = pixels + (j * w + i) * 4;
+            scanLine[i] = makeRGBA(p[0], p[1], p[2], 255 - p[3]);
         }
     }
     return buf;
