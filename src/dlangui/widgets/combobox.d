@@ -140,7 +140,6 @@ class ComboBoxBase : HorizontalLayout, OnClickHandler {
             _popupList = null;
         };
         _popupList.itemSelected = delegate(Widget source, int index) {
-            //selectedItemIndex = index;
             return true;
         };
         _popupList.itemClick = delegate(Widget source, int index) {
@@ -189,12 +188,9 @@ class ComboBoxBase : HorizontalLayout, OnClickHandler {
         _body = createSelectedItemWidget();
         _body.click = this;
         _button = createButton();
-        //_body.state = State.Parent;
-        //focusable = true;
         _button.focusable = false;
         _body.focusable = false;
         focusable = true;
-        //_body.focusable = true;
         addChild(_body);
         addChild(_button);
     }
@@ -562,11 +558,7 @@ class ComboEdit : ComboBox {
 
     override void initialize() {
         super.initialize();
-        //focusable = false;
-        //_body.focusable = true;
     }
 
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(ComboBox)());

@@ -5,7 +5,6 @@ static if (ENABLE_OPENGL):
 
 import dlangui.core.math3d;
 import dlangui.core.types;
-//import dlangui.graphics.scene.material;
 import dlangui.graphics.scene.effect;
 
 /// Reference counted Mesh object

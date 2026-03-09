@@ -644,7 +644,6 @@ class DrawBuf : RefCountedObject {
         if (hasInnerArea) {
             PointF[] innerArea;
             innerArea.assumeSafeAppend;
-            //Log.d("fill poly inner: ", points);
             for(int i = 0; i < len; i++) {
                 PointF[4] quad;
                 int index0 = i - 1;
@@ -665,7 +664,6 @@ class DrawBuf : RefCountedObject {
                         index3 = len - 1;
                     }
                 }
-                //Log.d("lineSegment - inner ", index0, ", ", index1, ", ", index2, ", ", index3);
                 calcLineSegmentQuad(points[index0], points[index1], points[index2], points[index3], width, quad);
                 innerArea ~= quad[3];
             }
@@ -691,7 +689,6 @@ class DrawBuf : RefCountedObject {
                         index3 = len - 1;
                     }
                 }
-                //Log.d("lineSegment - outer ", index0, ", ", index1, ", ", index2, ", ", index3);
                 if (cycled || i + 1 < len)
                     drawLineSegmentF(points[index0], points[index1], points[index2], points[index3], width, colour);
             }
@@ -1045,7 +1042,6 @@ class ColorDrawBufBase : DrawBuf {
 
     /// draw source buffer rectangle contents to destination buffer rectangle applying rescaling
     override void drawRescaled(Rect dstrect, DrawBuf src, Rect srcrect) {
-        //Log.d("drawRescaled ", dstrect, " <- ", srcrect);
         if (_alpha >= 254)
             return; // fully transparent - don't draw
 		double kx = cast(double)srcrect.width / dstrect.width;
@@ -1165,7 +1161,6 @@ class ColorDrawBufBase : DrawBuf {
         p.padding.top = y10 - 1;
         p.padding.bottom = _dy - y11 - 1;
         _ninePatch = p;
-        //Log.d("NinePatch detected: frame=", p.frame, " padding=", p.padding, " left+right=", p.frame.left + p.frame.right, " dx=", _dx);
         return true;
     }
 
@@ -1394,7 +1389,6 @@ class GrayDrawBuf : DrawBuf {
     }
     /// draw source buffer rectangle contents to destination buffer rectangle applying rescaling
     override void drawRescaled(Rect dstrect, DrawBuf src, Rect srcrect) {
-        //Log.d("drawRescaled ", dstrect, " <- ", srcrect);
         if (applyClipping(dstrect, srcrect)) {
             int[] xmap = createMap(dstrect.left, dstrect.right, srcrect.left, srcrect.right);
             int[] ymap = createMap(dstrect.top, dstrect.bottom, srcrect.top, srcrect.bottom);

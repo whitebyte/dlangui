@@ -254,10 +254,8 @@ class Drawable : RefCountedObject {
 
     this() {
         debug ++_instanceCount;
-        //Log.d("Created drawable, count=", ++_instanceCount);
     }
     ~this() {
-        //Log.d("Destroyed drawable, count=", --_instanceCount);
         debug --_instanceCount;
     }
     abstract void drawTo(DrawBuf buf, Rect rc, uint state = 0, int tilex0 = 0, int tiley0 = 0);
@@ -648,7 +646,6 @@ class ImageDrawable : Drawable {
         if (_image.hasNinePatch) {
             // draw nine patch
             const NinePatch * p = _image.ninePatch;
-            //Log.d("drawing nine patch image with frame ", p.frame, " padding ", p.padding);
             int w = width;
             int h = height;
             Rect srcrect = Rect(1, 1, w + 1, h + 1);
@@ -669,16 +666,8 @@ class ImageDrawable : Drawable {
                 int dsty1 = rc.top + p.frame.top;
                 int dsty2 = rc.bottom - p.frame.bottom;
                 int dsty3 = rc.bottom;
-                //Log.d("x bounds: ", x0, ", ", x1, ", ", x2, ", ", x3, " dst ", dstx0, ", ", dstx1, ", ", dstx2, ", ", dstx3);
-                //Log.d("y bounds: ", y0, ", ", y1, ", ", y2, ", ", y3, " dst ", dsty0, ", ", dsty1, ", ", dsty2, ", ", dsty3);
-
                 correctFrameBounds(x1, x2, dstx1, dstx2);
                 correctFrameBounds(y1, y2, dsty1, dsty2);
-
-                //correctFrameBounds(x1, x2);
-                //correctFrameBounds(y1, y2);
-                //correctFrameBounds(dstx1, dstx2);
-                //correctFrameBounds(dsty1, dsty2);
                 if (y0 < y1 && dsty0 < dsty1) {
                     // top row
                     if (x0 < x1 && dstx0 < dstx1)
@@ -1332,7 +1321,6 @@ class DrawableCache {
     ~this() {
         debug(resalloc) Log.e("Drawable instace count before destroying of DrawableCache: ", ImageDrawable.instanceCount);
 
-        //Log.i("Destroying DrawableCache _idToDrawableMap.length=", _idToDrawableMap.length);
         Log.i("Destroying DrawableCache");
         foreach (ref item; _idToDrawableMap) {
             destroy(item);

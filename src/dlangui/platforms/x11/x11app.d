@@ -395,8 +395,6 @@ class X11Window : DWindow {
 
         /* create the Graphics Context */
         _gc = createGC(x11display, _win);
-        //_gc = XCreateGC(x11display, _win, 0, cast(XGCValues*)null);
-        //Log.d("X11Window: windowId=", _win, " gc=", _gc);
 
 
 
@@ -690,7 +688,6 @@ class X11Window : DWindow {
     ColorDrawBuf _drawbuf;
     protected void drawUsingBitmap() {
         if (_dx > 0 && _dy > 0) {
-            //Log.d("drawUsingBitmap()");
             // prepare drawbuf
             if (_drawbuf is null)
                 _drawbuf = new ColorDrawBuf(_dx, _dy);
@@ -730,7 +727,6 @@ class X11Window : DWindow {
 
     protected void drawUsingOpengl() {
         static if (ENABLE_OPENGL) {
-            //Log.d("drawUsingOpengl()");
             glXMakeCurrent(x11display, cast(uint)_win, _glc);
             glDisable(GL_DEPTH_TEST);
             glViewport(0, 0, _dx, _dy);
@@ -752,9 +748,6 @@ class X11Window : DWindow {
     void redraw() {
         _lastRedrawEventCode = 0;
         //Use values cached by ConfigureNotify to avoid XGetWindowAttributes call.
-        //XWindowAttributes window_attributes_return;
-        //XGetWindowAttributes(x11display, _win, &window_attributes_return);
-        //Log.d(format("XGetWindowAttributes reported size %d, %d", window_attributes_return.width, window_attributes_return.height));
         immutable width = _cachedWidth;
         immutable height = _cachedHeight;
         if (width > 0 && height > 0)
@@ -1223,7 +1216,6 @@ class X11Window : DWindow {
                 ev.xclient.window = _win;
                 ev.xclient.display = x11display2;
                 ev.xclient.format = 32;
-                //Log.d("Sending timer event");
                 XLockDisplay(x11display2);
                 XSendEvent(x11display2, _win, false, StructureNotifyMask, &ev);
                 XFlush(x11display2);
@@ -1383,7 +1375,6 @@ class X11Platform : Platform {
             if (selectResult < 0) {
                 Log.e("X11: display fd select error");
             } else if (selectResult == 1) {
-                //Log.d("X11: XPending");
                 eventsInQueue = XPending(x11display);
             }
         }
@@ -2012,8 +2003,6 @@ extern(C) int DLANGUImain(string[] args)
     } else {
         res = UIAppMain(args);
     }
-
-    //Log.e("Widget instance count after UIAppMain: ", Widget.instanceCount());
 
     Log.d("Destroying X11 platform");
     Platform.setInstance(null);

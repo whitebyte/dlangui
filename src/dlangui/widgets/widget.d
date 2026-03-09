@@ -213,7 +213,6 @@ public:
         _state = State.Enabled;
         _cachedStyle = currentTheme.get(null);
         debug _instanceCount++;
-        //Log.d("Created widget, count = ", ++_instanceCount);
     }
 
     debug {
@@ -224,7 +223,6 @@ public:
 
     ~this() {
         debug {
-            //Log.v("destroying widget ", _id, " ", this.classinfo.name);
             if (appShuttingDown)
                 onResourceDestroyWhileShutdown(_id, this.classinfo.name);
             _instanceCount--;
@@ -232,7 +230,6 @@ public:
         if (_ownStyle !is null)
             destroy(_ownStyle);
         _ownStyle = null;
-        //Log.d("Destroyed widget, count = ", --_instanceCount);
     }
 
 
@@ -254,13 +251,6 @@ public:
         const (Style) stateStyle = normalStyle.forState(stateFlags);
         if (stateStyle !is normalStyle)
             return stateStyle; // found style for state in current style
-        //// lookup state style in parent (one level max)
-        //const (Style) parentStyle = normalStyle.parentStyle;
-        //if (parentStyle is normalStyle)
-        //    return normalStyle; // no parent
-        //const (Style) parentStateStyle = parentStyle.forState(stateFlags);
-        //if (parentStateStyle !is parentStyle)
-        //    return parentStateStyle; // found style for state in parent
         return normalStyle; // fallback to current style
     }
     /// returns style for current widget state
@@ -733,20 +723,14 @@ public:
             if (!force && !w.actionsUpdateRequested())
                 return false;
             const ActionState oldState = a.state;
-            //import dlangui.widgets.editors;
-            //if (a.id == EditorActions.Undo) {
-            //    Log.d("Requesting Undo action. Old state: ", a.state);
-            //}
             if (w.dispatchActionStateRequest(a, this)) {
                 // state is updated
-                //Log.d("updateActionState ", a.label, " found state: ", a.state.toString);
                 if (allowDefault)
                     return true; // return 'request dispatched' flag instead of 'changed'
             } else {
                 if (!allowDefault)
                     return false;
                 a.state = a.defaultState;
-                //Log.d("updateActionState ", a.label, " using default state: ", a.state.toString);
             }
             if (a.state != oldState)
                 return true;
@@ -1203,15 +1187,12 @@ public:
         if (keyEvent.assigned && keyEvent(this, event))
             return true; // processed by external handler
         if (event.action == KeyAction.KeyDown) {
-            //Log.d("Find key action for key = ", event.keyCode, " flags=", event.flags);
             Action action = findKeyAction(event.keyCode, event.flags); // & (KeyFlag.Shift | KeyFlag.Alt | KeyFlag.Control | KeyFlag.Menu)
             if (action !is null) {
-                //Log.d("Action found: ", action.id, " ", action.labelValue.id);
                 // update action state
                 if ((action.stateUpdateFlag & ActionStateUpdateFlag.inAccelerator) && updateActionState(action, true) && action is _action)
                     handleActionStateChanged();
-
-                //run only enabled actions
+                // run only enabled actions
                 if (action.state.enabled)
                     return dispatchAction(action);
             }
@@ -1262,7 +1243,6 @@ public:
     bool onMouseEvent(MouseEvent event) {
         if (mouseEvent.assigned && mouseEvent(this, event))
             return true; // processed by external handler
-        //Log.d("onMouseEvent ", id, " ", event.action, "  (", event.x, ",", event.y, ")");
         // support onClick
         if (canClick) {
             if (event.action == MouseAction.ButtonDown && event.button == MouseButton.Left) {
@@ -1426,11 +1406,6 @@ public:
             dx = maxw;
         if (maxh != SIZE_UNSPECIFIED && dy > maxh)
             dy = maxh;
-        // apply FILL_PARENT
-        //if (parentWidth != SIZE_UNSPECIFIED && layoutWidth == FILL_PARENT)
-        //    dx = parentWidth;
-        //if (parentHeight != SIZE_UNSPECIFIED && layoutHeight == FILL_PARENT)
-        //    dy = parentHeight;
         // apply max parent size constraint
         if (parentWidth != SIZE_UNSPECIFIED && dx > parentWidth)
             dx = parentWidth;

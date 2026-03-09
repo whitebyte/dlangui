@@ -107,8 +107,6 @@ class StatusLineEditorStatePanel : StatusLineTextPanel {
     this(string ID = "statusLineEditorStateLabel") {
         super(ID);
         _text.alignment = Align.VCenter | Align.Right;
-        //_text.backgroundColor = 0x80FF0000;
-        //backgroundColor = 0x8000FF00;
         updateSize();
         visibility = Visibility.Gone;
     }

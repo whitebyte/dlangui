@@ -187,7 +187,6 @@ class TabItemWidget : HorizontalLayout {
     }
 
     override void onDraw(DrawBuf buf) {
-        //debug Log.d("TabWidget.onDraw ", id);
         super.onDraw(buf);
     }
 
@@ -617,7 +616,6 @@ class TabControl : WidgetGroupDefaultDrawing {
 
     /// Measure widget according to desired width and height constraints. (Step 1 of two phase layout).
     override void measure(int parentWidth, int parentHeight) {
-        //Log.d("tabControl.measure enter");
         Rect m = margins;
         Rect p = padding;
         // calc size constraints for children
@@ -646,12 +644,10 @@ class TabControl : WidgetGroupDefaultDrawing {
             sz.x += tab.measuredWidth - _buttonOverlap;
         }
         measuredContent(parentWidth, parentHeight, sz.x, sz.y);
-        //Log.d("tabControl.measure exit");
     }
 
     /// Set widget rectangle to specified value and layout widget contents. (Step 2 of two phase layout).
     override void layout(Rect rc) {
-        //Log.d("tabControl.layout enter");
         _needLayout = false;
         if (visibility == Visibility.Gone) {
             return;
@@ -691,14 +687,12 @@ class TabControl : WidgetGroupDefaultDrawing {
             widget.layout(rc);
             rc.left += w - _buttonOverlap;
         }
-        //Log.d("tabControl.layout exit");
     }
 
     /// Draw widget at its position to buffer
     override void onDraw(DrawBuf buf) {
         if (visibility != Visibility.Visible)
             return;
-        //debug Log.d("TabControl.onDraw enter");
         super.Widget.onDraw(buf);
         Rect rc = _pos;
         applyMargins(rc);
@@ -722,7 +716,6 @@ class TabControl : WidgetGroupDefaultDrawing {
                 continue;
             item.onDraw(buf);
         }
-        //debug Log.d("TabControl.onDraw exit");
     }
 
     protected string _selectedTabId;
@@ -872,19 +865,6 @@ class TabHost : FrameLayout, TabHandler {
             _tabControl.selectTab(index, updateAccess);
         }
     }
-//    /// request relayout of widget and its children
-//    override void requestLayout() {
-//        Log.d("TabHost.requestLayout called");
-//        super.requestLayout();
-//        //_needLayout = true;
-//    }
-//    /// Set widget rectangle to specified value and layout widget contents. (Step 2 of two phase layout).
-//    override void layout(Rect rc) {
-//        Log.d("TabHost.layout() called");
-//        super.layout(rc);
-//        Log.d("after layout(): needLayout = ", needLayout);
-//    }
-
 }
 
 

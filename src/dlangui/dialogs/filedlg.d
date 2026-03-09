@@ -452,10 +452,6 @@ class FileDialog : Dialog, CustomGridCellAdapter {
             _entries = listDirectory(dir, attrFilter, selectedFilter());
         } catch(Exception e) {
             Log.e("Cannot list directory " ~ dir, e);
-            //import dlangui.dialogs.msgbox;
-            //auto msgBox = new MessageBox(UIString.fromId("MESSAGE_ERROR"c), UIString.fromRaw(e.msg.toUTF32), window());
-            //msgBox.show();
-            //return false;
             // show empty dir if failed to read
         }
         _fileList.rows = 0;
@@ -722,10 +718,6 @@ class FileDialog : Dialog, CustomGridCellAdapter {
         content.layoutWidth(FILL_PARENT).layoutHeight(FILL_PARENT); //.minWidth(400).minHeight(300);
 
 
-        //leftPanel = new VerticalLayout("places");
-        //leftPanel.addChild(createRootsList());
-
-
         leftPanel = createRootsList();
         leftPanel.minWidth(40.pointsToPixels);
 
@@ -857,20 +849,6 @@ class FileDialog : Dialog, CustomGridCellAdapter {
         autofitGrid();
     }
 
-
-    ///// Measure widget according to desired width and height constraints. (Step 1 of two phase layout).
-    //override void measure(int parentWidth, int parentHeight) {
-    //    super.measure(parentWidth, parentHeight);
-    //    for(int i = 0; i < childCount; i++) {
-    //        Widget w = child(i);
-    //        Log.d("id=", w.id, " measuredHeight=", w.measuredHeight );
-    //        for (int j = 0; j < w.childCount; j++) {
-    //            Widget w2 = w.child(j);
-    //            Log.d("    id=", w2.id, " measuredHeight=", w.measuredHeight );
-    //        }
-    //    }
-    //    Log.d("this id=", id, " measuredHeight=", measuredHeight);
-    //}
 
     override void onShow() {
         _fileList.setFocus();
@@ -1015,7 +993,6 @@ class FilePathPanelButtons : WidgetGroupDefaultDrawing {
     }
     /// Set widget rectangle to specified value and layout widget contents. (Step 2 of two phase layout).
     override void layout(Rect rc) {
-        //Log.d("tabControl.layout enter");
         _needLayout = false;
         if (visibility == Visibility.Gone) {
             return;
@@ -1261,5 +1238,3 @@ class DirEditLine : FileNameEditLine {
     }
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(FileNameEditLine, DirEditLine)());

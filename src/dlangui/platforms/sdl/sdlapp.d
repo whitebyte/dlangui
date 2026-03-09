@@ -553,7 +553,6 @@ class SDLWindow : Window {
             SDL_Cursor * cursor;
             // check for existing cursor in map
             if (cursorType in _cursorMap) {
-                //Log.d("changing cursor to ", cursorType);
                 cursor = _cursorMap[cursorType];
                 if (cursor)
                     SDL_SetCursor(cursor);
@@ -643,7 +642,6 @@ class SDLWindow : Window {
     }
 
     void redraw() {
-        //Log.e("Widget instance count in SDLWindow.redraw: ", Widget.instanceCount());
         // check if size has been changed
         fixSize();
 
@@ -1268,10 +1266,7 @@ class SDLPlatform : Platform {
         bool quit = false;
         bool skipNextQuit = false;
         while(!quit) {
-            //redrawWindows();
             if (SDL_WaitEvent(&event)) {
-
-                //Log.d("Event.type = ", event.type);
 
                 if (event.type == SDL_QUIT) {
                     if (!skipNextQuit) {
@@ -1587,13 +1582,9 @@ version (Windows) {
 
     int myWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int iCmdShow)
     {
-        //Log.d("myWinMain()");
         string basePath = exePath();
-        //Log.i("Current executable: ", exePath());
         string cmdline = fromStringz(lpCmdLine).dup;
-        //Log.i("Command line: ", cmdline);
         string[] args = splitCmdLine(cmdline);
-        //Log.i("Command line params: ", args);
 
         return sdlmain(args);
     }
@@ -1706,8 +1697,6 @@ int sdlmain(string[] args) {
     } else {
         res = UIAppMain(args);
     }
-
-    //Log.e("Widget instance count after UIAppMain: ", Widget.instanceCount());
 
     Log.d("Destroying SDL platform");
     Platform.setInstance(null);

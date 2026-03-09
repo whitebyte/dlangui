@@ -162,7 +162,6 @@ class GLDrawBuf : DrawBuf, GLConfigCallback {
     override void drawFragment(int x, int y, DrawBuf src, Rect srcrect) {
         assert(_scene !is null);
         Rect dstrect = Rect(x, y, x + srcrect.width, y + srcrect.height);
-        //Log.v("GLDrawBuf.frawFragment dst=", dstrect, " src=", srcrect);
         if (applyClipping(dstrect, srcrect)) {
             if (!glImageCache.isInCache(src.id))
                 glImageCache.put(src);
@@ -172,7 +171,6 @@ class GLDrawBuf : DrawBuf, GLConfigCallback {
     /// draw source buffer rectangle contents to destination buffer rectangle applying rescaling
     override void drawRescaled(Rect dstrect, DrawBuf src, Rect srcrect) {
         assert(_scene !is null);
-        //Log.v("GLDrawBuf.frawRescaled dst=", dstrect, " src=", srcrect);
         if (applyClipping(dstrect, srcrect)) {
             if (!glImageCache.isInCache(src.id))
                 glImageCache.put(src);
@@ -672,7 +670,6 @@ private class GLGlyphCache : GLCache
                     dstrc.bottom -= clip.bottom;
                 }
                 if (!dstrc.empty) {
-                    //Log.d("drawing glyph with color ", color);
                     glSupport.queue.addTexturedRect(_texture, _tdx, _tdy, color, color, color, color, srcrc, dstrc, false);
                 }
             }

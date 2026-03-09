@@ -51,7 +51,6 @@ Authors:   Vadim Lopatin, coolreader.org@gmail.com
 module dlangui.core.linestream;
 
 import dlangui.core.streams;
-//import std.stream;
 import std.stdio;
 import std.conv;
 import std.utf;

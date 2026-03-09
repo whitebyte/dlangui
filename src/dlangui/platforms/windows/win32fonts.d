@@ -338,8 +338,6 @@ class Win32Font : Font {
             return null;
 
         if (needSubpixelRendering) {
-            //Log.d("ch=", ch);
-            //Log.d("NORMAL:  blackBoxX=", g.blackBoxX, " \tblackBoxY=", g.blackBoxY, " \torigin.x=", g.originX, " \torigin.y=", g.originY, "\tgmCellIncX=", g.width);
             g.blackBoxX = cast(ushort)metrics.gmBlackBoxX;
             g.blackBoxY = cast(ubyte)metrics.gmBlackBoxY;
             g.originX = cast(byte)((metrics.gmptGlyphOrigin.x + 0) / 3);
@@ -347,8 +345,6 @@ class Win32Font : Font {
             g.widthPixels = cast(ubyte)((metrics.gmCellIncX  + 2) / 3);
             g.widthScaled = g.widthPixels << 6;
             g.subpixelMode = FontManager.subpixelRenderingMode;
-            //Log.d(" *3   :  blackBoxX=", metrics.gmBlackBoxX, " \tblackBoxY=", metrics.gmBlackBoxY, " \torigin.x=", metrics.gmptGlyphOrigin.x, " \torigin.y=", metrics.gmptGlyphOrigin.y, " \tgmCellIncX=", metrics.gmCellIncX);
-            //Log.d("  /3  :  blackBoxX=", g.blackBoxX, " \tblackBoxY=", g.blackBoxY, " \torigin.x=", g.originX, " \torigin.y=", g.originY, "\tgmCellIncX=", g.width);
         } else {
             g.blackBoxX = cast(ushort)metrics.gmBlackBoxX;
             g.blackBoxY = cast(ubyte)metrics.gmBlackBoxY;
@@ -570,9 +566,7 @@ class Win32FontManager : FontManager {
 
     /// get font by properties
     override ref FontRef getFont(int size, int weight, bool italic, FontFamily family, string face) {
-        //Log.i("getFont()");
         FontDef * def = findFace(family, face);
-        //Log.i("getFont() found face ", def.face, " by requested face ", face);
         if (def !is null) {
             int index = _activeFonts.find(size, weight, italic, def.family, def.face);
             if (index >= 0)
@@ -703,8 +697,6 @@ extern(Windows) {
                                      LPARAM lParam             // application-defined data
                                          )
     {
-        //
-        //Log.d("LVWin32FontEnumFontFamExProc fontType=", fontType);
         if (fontType == TRUETYPE_FONTTYPE)
         {
             void * p = cast(void*)lParam;
@@ -715,7 +707,6 @@ extern(Windows) {
             FontFamily family = pitchAndFamilyToFontFamily(lf.lfPitchAndFamily);
             if (face.length < 2 || face[0] == '@')
                 return 1;
-            //Log.d("face:", face);
             fontman.registerFont(family, face, lf.lfPitchAndFamily);
         }
         return 1;

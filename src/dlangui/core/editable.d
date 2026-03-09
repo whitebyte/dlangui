@@ -1176,12 +1176,10 @@ class EditableContent {
                 buf ~= firstLineHead;
                 buf ~= newline;
                 buf ~= lastLineTail;
-                //Log.d("merging lines ", firstLineHead, " ", newline, " ", lastLineTail);
                 _lines[i] = cast(dstring)buf;
                 clearTokenProps(i, i + 1);
                 if (!marks)
                     markChangedLines(i, i + 1);
-                //Log.d("merge result: ", _lines[i]);
             } else if (i == after.start.line) {
                 dchar[] buf;
                 buf ~= firstLineHead;
@@ -1382,7 +1380,6 @@ class EditableContent {
         dstring[] newcontent = op.oldContent;
         EditStateMark[] newmarks = op.oldEditMarks; //_undoBuffer.savedInUndo() ?  : null;
         TextRange rangeAfter = op.range;
-        //Log.d("Undoing op rangeBefore=", rangeBefore, " contentBefore=`", oldcontent, "` rangeAfter=", rangeAfter, " contentAfter=`", newcontent, "`");
         replaceRange(rangeBefore, rangeAfter, newcontent, newmarks);
         handleContentChange(op, rangeBefore, rangeAfter, source ? source : this);
         return true;
@@ -1399,7 +1396,6 @@ class EditableContent {
         dstring[] oldcontent = op.oldContent;
         dstring[] newcontent = op.content;
         TextRange rangeAfter = op.newRange;
-        //Log.d("Redoing op rangeBefore=", rangeBefore, " contentBefore=`", oldcontent, "` rangeAfter=", rangeAfter, " contentAfter=`", newcontent, "`");
         replaceRange(rangeBefore, rangeAfter, newcontent);
         handleContentChange(op, rangeBefore, rangeAfter, source ? source : this);
         return true;

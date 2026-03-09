@@ -29,7 +29,6 @@ class SourceEdit : EditBox {
         super(ID);
         _extendRightScrollBound = true;
         fontFace = DEFAULT_SOURCE_EDIT_FONT_FACES;
-        //fontFace = "Consolas,Lucida Console,Courier New";
         fontFamily = FontFamily.MonoSpace;
         fontSize = makePointSize(10);
         layoutWidth(FILL_PARENT).layoutHeight(FILL_PARENT);

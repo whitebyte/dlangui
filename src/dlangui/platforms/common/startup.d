@@ -387,16 +387,9 @@ extern (C) void initResourceManagers() {
 
 /// call this from shared static this()
 extern (C) void initSharedResourceManagers() {
-    //Log.d("initSharedResourceManagers()");
-    //import dlangui.core.i18n;
-    //if (!i18n) {
-    //    Log.d("Creating i18n object");
-    //    i18n = new shared UIStringTranslator();
-    //}
 }
 
 shared static this() {
-    //initSharedResourceManagers();
 }
 
 /// register standard widgets to use in DML

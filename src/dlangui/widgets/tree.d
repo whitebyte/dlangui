@@ -633,7 +633,6 @@ class TreeItemWidget : HorizontalLayout {
             _expander.clickable = true;
             _expander.trackHover = true;
             _expander.visibility = _item.hasChildren ? Visibility.Visible : Visibility.Invisible;
-            //_expander.setState(State.Parent);
 
             _expander.click = delegate(Widget source) {
                 _item.selectItem(_item);
@@ -885,8 +884,6 @@ class TreeWidgetBase :  ScrollWidget, OnTreeContentChangeListener, OnTreeStateCh
         if (_needUpdateWidgetStates)
             updateWidgetStates();
         return super.fullContentSize();
-        //_contentWidget.measure(SIZE_UNSPECIFIED, SIZE_UNSPECIFIED);
-        //return Point(_contentWidget.measuredWidth,_contentWidget.measuredHeight);
     }
 
     /// Measure widget according to desired width and height constraints. (Step 1 of two phase layout).

@@ -301,13 +301,10 @@ class DMLSyntaxSupport : SyntaxSupport {
         initTokenizer();
         for (;;) {
             TokenWithRange tokenRange = nextToken();
-            //Log.d("read token: ", tokenRange);
             if (tokenRange.token.type == TokenType.eof) {
-                //Log.d("end of file");
                 return tokenRange;
             }
             if (pos >= tokenRange.range.start && pos < tokenRange.range.end) {
-                //Log.d("found: ", pos, " in ", tokenRange);
                 return tokenRange;
             }
         }
@@ -318,12 +315,10 @@ class DMLSyntaxSupport : SyntaxSupport {
         initTokenizer();
         for (;;) {
             TokenWithRange tokenRange = nextToken();
-            //Log.d("read token: ", tokenRange);
             if (tokenRange.token.type == TokenType.eof) {
                 return res;
             }
             if (tokenRange.range.intersects(range)) {
-                //Log.d("found: ", pos, " in ", tokenRange);
                 res ~= tokenRange;
             }
         }
@@ -399,9 +394,7 @@ class DMLSyntaxSupport : SyntaxSupport {
     override bool canToggleBlockComment(TextRange range) {
         TokenWithRange startToken = getPositionToken(range.start);
         TokenWithRange endToken = getPositionToken(range.end);
-        //Log.d("canToggleBlockComment: startToken=", startToken, " endToken=", endToken);
         if (startToken.range == endToken.range && startToken.token.isMultilineComment) {
-            //Log.d("canToggleBlockComment: can uncomment");
             return true;
         }
         if (range.empty)
@@ -441,9 +434,7 @@ class DMLSyntaxSupport : SyntaxSupport {
                             break;
                         charsRemoved++;
                     }
-                    //Log.d("line before removing start of comment:", s);
                     s = s[range.start.pos + charsRemoved .. $];
-                    //Log.d("line after removing start of comment:", s);
                     charsRemoved += range.start.pos;
                 }
                 if (i == range.end.line) {
@@ -456,9 +447,7 @@ class DMLSyntaxSupport : SyntaxSupport {
                             break;
                         endRemoved++;
                     }
-                    //Log.d("line before removing end of comment:", s);
                     s = s[0 .. endp - endRemoved];
-                    //Log.d("line after removing end of comment:", s);
                 }
                 dsttext ~= s;
             }

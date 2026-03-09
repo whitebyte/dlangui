@@ -129,7 +129,6 @@ class AppFrame : VerticalLayout, MenuItemClickHandler, MenuItemActionHandler {
                             string v = value[i].str;
                             Accelerator a;
                             if (a.parse(v)) {
-                                //Log.d("Read accelerator for action ", key, " : ", a.toString);
                                 accelerators ~= a;
                             } else
                                 Log.e("applyShortcutsSettings: cannot parse accelerator: ", v);
@@ -138,7 +137,6 @@ class AppFrame : VerticalLayout, MenuItemClickHandler, MenuItemActionHandler {
                         string v = value.str;
                         Accelerator a;
                         if (a.parse(v)) {
-                            //Log.d("Read accelerator for action ", key, " : ", a.toString);
                             accelerators ~= a;
                         } else
                             Log.e("applyShortcutsSettings: cannot parse accelerator: ", v);

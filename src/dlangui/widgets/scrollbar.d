@@ -233,7 +233,6 @@ class ScrollBar : AbstractSlider, OnClickHandler {
                     space = _scrollArea.width - rc.width;
                 }
                 layoutButtons(rc);
-                //_pos = rc;
                 int position = cast(int)(space > 0 ? _minValue + cast(long)offset * (_maxValue - _minValue - _pageSize) / space : 0);
                 invalidate();
                 onIndicatorDragging(_dragStartPosition, position);
@@ -584,7 +583,6 @@ class ScrollBar : AbstractSlider, OnClickHandler {
             return true;
         }
         return true;
-        //return super.onMouseEvent(event);
     }
 
     /// Draw widget at its position to buffer
@@ -687,7 +685,6 @@ class SliderWidget : AbstractSlider, OnClickHandler {
                     space = _scrollArea.width - rc.width;
                 }
                 layoutButtons(rc);
-                //_pos = rc;
                 int position = cast(int)(space > 0 ? _minValue + cast(long)offset * (_maxValue - _minValue - _pageSize) / space : 0);
                 invalidate();
                 onIndicatorDragging(_dragStartPosition, position);

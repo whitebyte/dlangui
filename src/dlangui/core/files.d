@@ -333,7 +333,6 @@ private:
                 // detect drive type
                 RootEntryType type;
                 uint wtype = GetDriveTypeA(("" ~ path).ptr);
-                //Log.d("Drive ", path, " type ", wtype);
                 switch (wtype) {
                     case DRIVE_REMOVABLE:
                         type = RootEntryType.REMOVABLE;

@@ -184,7 +184,6 @@ public:
                     _callback.onError(this, SocketError.WriteError, "error while writing to connection");
                     return;
                 } else {
-                    //Log.d("Bytes sent:" ~ to!string(bytesSent));
                     if (bytesSent >= data.length)
                         return;
                     data = data[cast(int)bytesSent .. $];

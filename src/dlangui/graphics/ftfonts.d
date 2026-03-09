@@ -407,16 +407,9 @@ class FreeTypeFont : Font {
     override Glyph * getCharGlyph(dchar ch, bool withImage = true) {
         if (ch > 0xFFFF) // do not support unicode chars above 0xFFFF - due to cache limitations
             return null;
-        //long measureStart = std.datetime.Clock.currStdTime;
         Glyph * found = _glyphCache.find(cast(ushort)ch);
-        //long measureEnd = std.datetime.Clock.currStdTime;
-        //long duration = measureEnd - measureStart;
-        //if (duration > 10000)
-        //if (duration > 10000)
-        //    Log.d("ft _glyphCache.find took ", duration / 10, " ns");
         if (found !is null)
             return found;
-        //Log.v("Glyph ", ch, " is not found in cache, getting from font");
         uint index;
         FreeTypeFontFile file;
         if (!findGlyph(ch, 0, index, file)) {
@@ -625,7 +618,6 @@ class FreeTypeFontManager : FontManager {
         FontFileItem f = findBestMatch(weight, italic, family, face);
         if (f is null)
             return _nullFontRef;
-        //Log.d("getFont requesteed: ", face, " found: ", f.def.face);
         return f.get(size);
     }
 
@@ -676,7 +668,6 @@ class FreeTypeFontManager : FontManager {
     bool registerFont(string filename, FontFamily family, string face = null, bool italic = false, int weight = 0, bool dontLoadFile = false) {
         if (_library is null)
             return false;
-        //Log.v("FreeTypeFontManager.registerFont ", filename, " ", family, " ", face, " italic=", italic, " weight=", weight);
         if (!exists(filename) || !isFile(filename)) {
             Log.d("Font file ", filename, " not found");
             return false;

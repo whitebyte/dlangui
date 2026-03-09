@@ -118,7 +118,6 @@ class Effect : GLProgram {
         _visitedIncludes = null;
         _visitedIncludes[_id.vertexShaderName] = true; // mark as included
         string res = preProcessSource(loadVertexSource(_id.vertexShaderName));
-        //Log.v("vertexSource:", res);
         return res;
     }
 
@@ -126,7 +125,6 @@ class Effect : GLProgram {
         _visitedIncludes = null;
         _visitedIncludes[_id.fragmentShaderName] = true; // mark as included
         string res = preProcessSource(loadVertexSource(_id.fragmentShaderName));
-        //Log.v("fragmentSource:", res);
         return res;
     }
 

@@ -195,7 +195,6 @@ class ProgressBarWidget : AbstractProgressBar {
             int w = animDrawable.width;
             _animationPhase %= w * 1000;
             animDrawable.drawTo(buf, rc, 0, cast(int)(_animationPhase * _animationSpeedPixelsPerSecond / 1000), 0);
-            //Log.d("progress animation draw ", _animationPhase, " rc=", rc);
         }
     }
 }

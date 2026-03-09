@@ -229,7 +229,6 @@ class LayoutItems {
             else
                 scaleFactor = 0;
         }
-        //Log.d("VerticalLayout delta=", delta, ", nonres=", nonresizableWeight, ", res=", resizableWeight, ", scale=", scaleFactor);
         // find last resized - to allow fill space 1 pixel accurate
         int lastResized = -1;
         ResizerWidget resizer = null;
@@ -487,27 +486,21 @@ class ResizerWidget : Widget {
                 offset = rc.left - _scrollArea.left;
                 space = _scrollArea.width - rc.width;
             }
-            //_pos = rc;
-            //int position = space > 0 ? _minValue + offset * (_maxValue - _minValue - _pageSize) / space : 0;
             requestLayout();
             invalidate();
-            //onIndicatorDragging(_dragStartPosition, position);
             return true;
         }
         if (event.action == MouseAction.Move && trackHover) {
             if (!(state & State.Hovered)) {
-                //Log.d("Hover ", id);
                 setState(State.Hovered);
             }
             return true;
         }
         if ((event.action == MouseAction.Leave || event.action == MouseAction.Cancel) && trackHover) {
-            //Log.d("Leave ", id);
             resetState(State.Hovered);
             return true;
         }
         if (event.action == MouseAction.Cancel) {
-            //Log.d("SliderButton.onMouseEvent event.action == MouseAction.Cancel");
             if (_dragging) {
                 resetState(State.Pressed);
                 _dragging = false;
@@ -604,7 +597,6 @@ class LinearLayout : WidgetGroupDefaultDrawing {
         _pos = rc;
         applyMargins(rc);
         applyPadding(rc);
-        //debug Log.d("LinearLayout.layout id=", _id, " rc=", rc, " fillHoriz=", layoutWidth == FILL_PARENT);
         _layoutItems.layout(rc);
     }
 
@@ -825,15 +817,12 @@ class TableLayout : WidgetGroupDefaultDrawing {
         }
 
         Point measure(Widget parent, int cc, int rc, int pwidth, int pheight, bool layoutWidthFill, bool layoutHeightFill) {
-            //Log.d("grid measure ", parent.id, " pw=", pwidth, " ph=", pheight);
             initialize(cc, rc, layoutWidthFill, layoutHeightFill);
             for (int y = 0; y < rc; y++) {
                 for (int x = 0; x < cc; x++) {
                     int index = y * cc + x;
                     Widget child = index < parent.childCount ? parent.child(index) : null;
                     cell(x, y).measure(child, pwidth, pheight);
-                    //if (child)
-                    //    Log.d("cell ", x, ",", y, " child=", child.id, " measuredWidth=", child.measuredWidth, " minWidth=", child.minWidth);
                 }
             }
             // calc total row size
@@ -852,7 +841,6 @@ class TableLayout : WidgetGroupDefaultDrawing {
                 }
                 totalWidth += col(x).measuredSize;
             }
-            //Log.d("             ", parent.id, " w=", totalWidth, " h=", totalHeight);
             return Point(totalWidth, totalHeight);
         }
 
@@ -978,5 +966,3 @@ class TableLayout : WidgetGroupDefaultDrawing {
 
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(VerticalLayout, HorizontalLayout, TableLayout, FrameLayout)());

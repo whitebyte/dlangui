@@ -30,7 +30,6 @@ import dlangui.core.logger;
 import dlangui.core.types : parseHexDigit;
 public import dlangui.core.parseutils;
 import std.range;
-//import std.algorithm : clamp, equal;
 import std.algorithm : equal;
 import std.conv : to;
 import std.utf : encode;
@@ -1880,7 +1879,6 @@ final class Setting {
     private void parseMap(ref JsonParser parser) {
         clear(SettingType.OBJECT);
         int startPos = parser.pos;
-        //Log.v("parseMap at context ", parser.currentContext);
         char ch = parser.peek;
         parser.nextChar; // skip initial {
         if (ch != '{') {
@@ -1898,9 +1896,7 @@ final class Setting {
                 parser.error("no : char after object field name");
             parser.nextChar;
             this[key] = (new Setting()).parseJSON(parser);
-            //Log.v("context before skipSpaces: ", parser.currentContext);
             ch = parser.skipSpaces;
-            //Log.v("context after skipSpaces: ", parser.currentContext);
             if (ch == ',') {
                 parser.nextChar;
                 parser.skipSpaces;

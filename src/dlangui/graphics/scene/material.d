@@ -199,7 +199,6 @@ class Material : RefCountedObject {
             if (lights.u_directionalLightDirection.length) {
                 if (_effect.hasUniform(DefaultUniform.u_directionalLightDirection)) {
                     _effect.setUniform(DefaultUniform.u_directionalLightDirection, lights.u_directionalLightDirection);
-                    //Log.d("DefaultUniform.u_directionalLightDirection: ", lights.u_directionalLightDirection);
                 }
                 if (_effect.hasUniform(DefaultUniform.u_directionalLightColor))
                     _effect.setUniform(DefaultUniform.u_directionalLightColor, lights.u_directionalLightColor);

@@ -473,9 +473,6 @@ class UrlImageTextButton : ImageTextButton {
         a.stringParam = url;
         _action = a;
         styleId = null;
-        //_icon.styleId = STYLE_BUTTON_IMAGE;
-        //_label.styleId = STYLE_BUTTON_LABEL;
-        //_label.textFlags(TextFlag.Underline);
         _label.styleId = "BUTTON_LABEL_LINK";
         padding(Rect(3,3,3,3));
     }
@@ -629,7 +626,6 @@ class Button : Widget {
         super.onDraw(buf);
         Rect rc = _pos;
         applyMargins(rc);
-        //buf.fillRect(_pos, backgroundColor);
         applyPadding(rc);
         auto saver = ClipRectSaver(buf, rc, alpha);
         FontRef font = font();
@@ -676,5 +672,3 @@ class CanvasWidget : Widget {
     }
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(Widget, TextWidget, MultilineTextWidget, Button, ImageWidget, ImageButton, ImageCheckButton, ImageTextButton, RadioButton, CheckBox, ScrollBar, HSpacer, VSpacer, CanvasWidget)());

@@ -80,7 +80,6 @@ class MLParser {
     /// move to next token
     protected void nextToken() {
         _token = _tokenizer.nextToken();
-        //Log.d("parsed token: ", _token.type, " ", _token.line, ":", _token.pos, " ", _token.text);
     }
 
     /// throw exception if current token is eof

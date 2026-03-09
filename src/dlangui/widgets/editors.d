@@ -476,7 +476,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
             if (index == -1)
             {
                 parts ~= str[startIndex .. $];
-                //Log.d("Explode output: ", parts);
                 return parts;
             }
 
@@ -756,8 +755,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
     protected void drawLeftPane(DrawBuf buf, Rect rc, int line) {
         // override for custom drawn left pane
         buf.fillRect(rc, _leftPaneBackgroundColor);
-        //buf.fillRect(Rect(rc.right - 2, rc.top, rc.right - 1, rc.bottom), _leftPaneBackgroundColor2);
-        //buf.fillRect(Rect(rc.right - 1, rc.top, rc.right - 0, rc.bottom), _leftPaneBackgroundColor3);
         rc.right -= 3;
         if (_foldingWidth) {
             Rect rc2 = rc;
@@ -1122,7 +1119,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
     }
 
     override void onContentChange(EditableContent content, EditOperation operation, ref TextRange rangeBefore, ref TextRange rangeAfter, Object source) {
-        //Log.d("onContentChange rangeBefore=", rangeBefore, " rangeAfter=", rangeAfter, " text=", operation.content);
         _contentChanged = true;
         if (source is this) {
             if (operation.action == EditAction.ReplaceContent) {
@@ -1246,7 +1242,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
             if (!_caretBlinkingPhase)
                 _lastBlinkStartTs = currentTimeMillis;
             invalidate();
-            //window.update(true);
             bool res = focused;
             if (!res)
                 _caretTimerId = 0;
@@ -1347,10 +1342,8 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
             // draw caret
             Rect caretRc = caretRect();
             if (caretRc.intersects(_clientRect)) {
-                //caretRc.left++;
                 if (_replaceMode)
                     buf.fillRect(caretRc, _caretColorReplace);
-                //buf.drawLine(Point(caretRc.left, caretRc.bottom), Point(caretRc.left, caretRc.top), _caretColor);
                 buf.fillRect(Rect(caretRc.left, caretRc.top, caretRc.left + 1, caretRc.bottom), _caretColor);
             }
         }
@@ -2090,17 +2083,12 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
 
     /// handle keys
     override bool onKeyEvent(KeyEvent event) {
-        //Log.d("onKeyEvent ", event.action, " ", event.keyCode, " flags ", event.flags);
         if(super.onKeyEvent(event))
             return true;
         if (focused) startCaretBlinking();
         cancelHoverTimer();
         bool ctrlOrAltPressed = !!(event.flags & KeyFlag.Control); //(event.flags & (KeyFlag.Control /* | KeyFlag.Alt */));
-        //if (event.action == KeyAction.KeyDown && event.keyCode == KeyCode.SPACE && (event.flags & KeyFlag.Control)) {
-        //    Log.d("Ctrl+Space pressed");
-        //}
         if (event.action == KeyAction.Text && event.text.length && !ctrlOrAltPressed) {
-            //Log.d("text entered: ", event.text);
             if (readOnly)
                 return true;
             if (!(!!(event.flags & KeyFlag.Alt) && event.text.length == 1 && isAZaz(event.text[0]))) { // filter out Alt+A..Z
@@ -2117,12 +2105,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
                 return true;
             }
         }
-        //if (event.keyCode == KeyCode.SPACE && !readOnly) {
-        //    return true;
-        //}
-        //if (event.keyCode == KeyCode.RETURN && !readOnly && !_content.multiline) {
-        //    return true;
-        //}
         return false;
     }
 
@@ -2144,7 +2126,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
     protected void onHover(Point pos) {
         if (_hoverMousePosition == pos)
             return;
-        //Log.d("onHover ", pos);
         int x = pos.x - left - _leftPaneWidth;
         int y = pos.y - top;
         _hoverMousePosition = pos;
@@ -2164,7 +2145,6 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
 
     /// process mouse event; return true if event is processed by widget.
     override bool onMouseEvent(MouseEvent event) {
-        //Log.d("onMouseEvent ", id, " ", event.action, "  (", event.x, ",", event.y, ")");
         // support onClick
         bool insideLeftPane = event.x < _clientRect.left && event.x >= _clientRect.left - _leftPaneWidth;
         if (event.action == MouseAction.ButtonDown && insideLeftPane) {
@@ -2942,7 +2922,6 @@ class EditBox : EditWidgetBase {
         } else if(_wordWrap && !(_firstVisibleLine > maxFirstVisibleLine)) {
             //For wordwrap mode, move down sooner
             int offsetLines = -1 * caretHeightOffset / _lineHeight;
-            //Log.d("offsetLines: ", offsetLines);
             if (_caretPos.line >= _firstVisibleLine + visibleLines - offsetLines)
             {
                 _firstVisibleLine = _caretPos.line - visibleLines + 1 + offsetLines;
@@ -4239,7 +4218,6 @@ class FindPanel : HorizontalLayout {
         focusGroup = true;
         if (!replace)
             childById("replace").visibility = Visibility.Gone;
-        //_edFind = new EditLine("edFind"
         dstring currentText = _edFind.text;
         Log.d("currentText=", currentText);
         setDirection(false);
@@ -4414,5 +4392,3 @@ class FindPanel : HorizontalLayout {
     }
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(EditLine, EditBox, LogWidget)());

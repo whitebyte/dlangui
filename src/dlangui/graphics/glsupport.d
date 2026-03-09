@@ -172,7 +172,6 @@ class GLProgram : dlangui.graphics.scene.mesh.GraphicsEffect {
         compatibilityFixes(sourceCode, type);
 
         Log.d("compileShader: glslVersion = ", glslversion, ", type: ", (type == GL_VERTEX_SHADER ? "GL_VERTEX_SHADER" : (type == GL_FRAGMENT_SHADER ? "GL_FRAGMENT_SHADER" : "UNKNOWN")));
-        //Log.v("Shader code:\n", sourceCode);
         GLuint shader = checkgl!glCreateShader(type);
         const char * psrc = sourceCode.toStringz;
         checkgl!glShaderSource(shader, 1, &psrc, null);
@@ -307,8 +306,6 @@ class GLProgram : dlangui.graphics.scene.mesh.GraphicsEffect {
         if (auto p = variableName in _uniformLocations)
             return *p;
         int res = checkgl!glGetUniformLocation(program, variableName.toStringz);
-        //if (res == -1)
-        //    Log.e("glGetUniformLocation failed for " ~ variableName);
         _uniformLocations[variableName] = res;
         return res;
     }
@@ -323,8 +320,6 @@ class GLProgram : dlangui.graphics.scene.mesh.GraphicsEffect {
         if (auto p = variableName in _attribLocations)
             return *p;
         int res = checkgl!glGetAttribLocation(program, variableName.toStringz);
-        //if (res == -1)
-        //    Log.e("glGetAttribLocation failed for " ~ variableName);
         _attribLocations[variableName] = res;
         return res;
     }
@@ -1205,15 +1200,11 @@ class GLVertexBuffer : VertexBuffer {
         // specify index buffer
         checkgl!glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
         int offset = 0;
-        //Log.v("=== enableAttributes for ", _format);
         for(int i = 0; i < _format.length; i++) {
             int loc = effect.getVertexElementLocation(_format[i].type);
             if (loc >= 0) {
-                //Log.v("setting attrib pointer for type ", _format[i].type, " offset=", offset, " location=", loc);
                 checkgl!glVertexAttribPointer(loc, _format[i].size, GL_FLOAT, cast(ubyte)GL_FALSE, _format.vertexSize, cast(char*)(offset));
                 checkgl!glEnableVertexAttribArray(loc);
-            } else {
-                //Log.v("Attribute location not found for ", _format[i].type);
             }
             offset += _format[i].byteSize;
         }
@@ -1328,8 +1319,6 @@ class DummyVertexBuffer : VertexBuffer {
             if (loc >= 0) {
                 checkgl!glVertexAttribPointer(loc, _format[i].size, GL_FLOAT, cast(ubyte)GL_FALSE, _format.vertexSize, cast(char*)(offset));
                 checkgl!glEnableVertexAttribArray(loc);
-            } else {
-                //Log.d("Attribute location not found for ", _format[i].type);
             }
             offset += _format[i].byteSize;
         }
@@ -1428,7 +1417,6 @@ private final class OpenGLQueue {
                 default: break;
             }
         }
-        //Log.d(batches.length, " ", _vertices.data.length, " ", _colors.data.length, " ", _texCoords.data.length, " ", _indices.data.length);
         glSupport.destroyBuffers();
         batches.clear;
         _vertices.clear;

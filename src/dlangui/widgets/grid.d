@@ -1095,7 +1095,6 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
         int col = colByAbsoluteX(x);
         int start = col > 0 ? _colCumulativeWidths[col - 1] : 0;
         int end = (col < _cols ? _colCumulativeWidths[col] : _colCumulativeWidths[$ - 1]) - 1;
-        //Log.d("column range ", start, "..", end, " x=", x);
         if (x >= end - resizeRange / 2)
             return col; // resize this column
         if (x <= start + resizeRange / 2)
@@ -1713,7 +1712,6 @@ class GridWidgetBase : ScrollWidgetBase, GridModelAdapter, MenuItemActionHandler
             if (m < sz.x)
                 m = sz.x;
         }
-        //Log.d("measureColWidth ", x, " = ", m);
         if (m < 10)
             m = 10; // TODO: use min size
         return m;
@@ -1943,7 +1941,6 @@ class StringGridWidget : StringGridWidgetBase {
         if (_customCellAdapter && _customCellAdapter.isCustomCell(x, y)) {
             return _customCellAdapter.measureCell(x, y);
         }
-        //Log.d("measureCell ", x, ", ", y);
         FontRef fnt = font;
         dstring txt;
         if (x >= 0 && y >= 0)
@@ -2075,5 +2072,3 @@ class StringGridWidget : StringGridWidgetBase {
     }
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(StringGridWidget)());

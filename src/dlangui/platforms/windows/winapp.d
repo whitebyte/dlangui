@@ -518,13 +518,8 @@ class Win32Window : Window {
             import bindbc.opengl; //3.gl3;
             import bindbc.opengl; //3.wgl;
             import dlangui.graphics.gldrawbuf;
-            //Log.d("onPaint() start drawing opengl viewport: ", _dx, "x", _dy);
-            //PAINTSTRUCT ps;
-            //HDC hdc = BeginPaint(_hwnd, &ps);
-            //scope(exit) EndPaint(_hwnd, &ps);
             HDC hdc = GetDC(_hwnd);
             sharedGLContext.bind(hdc);
-            //_glSupport = _gl;
             glDisable(GL_DEPTH_TEST);
             glViewport(0, 0, _dx, _dy);
             float a = 1.0f;
@@ -635,10 +630,8 @@ class Win32Window : Window {
     }
 
     void handleTimer(UINT_PTR timerId) {
-        //Log.d("handleTimer id=", timerId);
         if (timerId == _timerId) {
             KillTimer(_hwnd, timerId);
-            //_timerId = 0;
             _nextExpectedTimerTs = 0;
             onTimer();
         }
@@ -1086,7 +1079,6 @@ class Win32Window : Window {
         event.mbutton = _mbutton;
         bool res = dispatchMouseEvent(event);
         if (res) {
-            //Log.v("Calling update() after mouse event");
             update();
         }
         return res;
@@ -1171,8 +1163,6 @@ class Win32Window : Window {
                 if (oldFlags != _keyFlags) {
                     debug(KeyInput) Log.d(" flags updated: onKey action=", action, " keyCode=", keyCode, " char=", character, "(", cast(int)character, ")", " syskey=", syskey, "    _keyFlags=", "%04x"d.format(_keyFlags));
                 }
-                //if (action == KeyAction.KeyDown)
-                //    Log.d("keydown, keyFlags=", _keyFlags);
             }
 
             event = new KeyEvent(action, keyCode, _keyFlags);
@@ -1385,13 +1375,11 @@ class Win32Platform : Platform {
         }
 
         CloseClipboard();
-        //Log.d("getClipboardText(", res, ")");
         return res;
     }
 
     /// sets text to clipboard (when mouseBuffer == true, use mouse selection clipboard - under linux)
     override void setClipboardText(dstring text, bool mouseBuffer = false) {
-        //Log.d("setClipboardText(", text, ")");
         if (text.length < 1 || mouseBuffer)
             return;
         if (!OpenClipboard(NULL))
@@ -1513,17 +1501,6 @@ static if (ENABLE_OPENGL) {
                 throw new Exception(format!"OpenGL 3.2 or higher is required, got: %s"(glVer));
             }
             Log.d("bindbc-opengl - loaded");
-            //
-            //// just to check OpenGL context
-            //Log.i("Trying to setup OpenGL context");
-            //Win32Window tmpWindow = new Win32Window(w32platform, ""d, null, 0);
-            //destroy(tmpWindow);
-            //if (openglEnabled)
-            //    Log.i("OpenGL support is enabled");
-            //else
-            //    Log.w("OpenGL support is disabled");
-            //// process messages
-            //platform.enterMessageLoop();
         } catch (Exception e) {
             Log.e("Exception while trying to init OpenGL", e);
             setOpenglEnabled(false);
@@ -1706,7 +1683,6 @@ LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                     }
                     else {
                         WINDOWPOS * pos = cast(WINDOWPOS*)lParam;
-                        //Log.d("WM_WINDOWPOSCHANGED: ", *pos);
 
                         GetClientRect(hwnd, &rect);
                         int dx = rect.right - rect.left;
@@ -1869,7 +1845,6 @@ LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_NCCREATE:
         case WM_NCCALCSIZE:
         default:
-            //Log.d("Unhandled message ", message);
             break;
     }
     if (window)

@@ -869,13 +869,11 @@ public:
         _parentStyle = theme;
         _id = id;
         debug _instanceCount++;
-        //Log.d("Created style ", _id, ", count=", ++_instanceCount);
     }
 
 
     ~this() {
         foreach(ref Style item; _substates) {
-            //Log.d("Destroying substate");
             destroy(item);
             item = null;
         }
@@ -889,7 +887,6 @@ public:
         _font.clear();
         destroy(_customDrawables);
         debug _instanceCount--;
-        //Log.d("Destroyed style ", _id, ", parentId=", _parentId, ", state=", _stateMask, ", count=", --_instanceCount);
     }
 
     /// create named substyle of this style
@@ -966,7 +963,6 @@ public:
     Style forState(uint state) {
         if (state == State.Normal)
             return this;
-        //Log.d("forState ", state, " styleId=", _id, " substates=", _substates.length);
         if (parentStyle !is null && _substates.length == 0 && parentStyle._substates.length > 0) //id is null &&
             return parentStyle.forState(state);
         foreach(item; _substates) {
@@ -980,7 +976,6 @@ public:
     const(Style) forState(uint state) const {
         if (state == State.Normal)
             return this;
-        //Log.d("forState ", state, " styleId=", _id, " substates=", _substates.length);
         if (parentStyle !is null && _substates.length == 0 && parentStyle._substates.length > 0) //id is null &&
             return parentStyle.forState(state);
         foreach(item; _substates) {
@@ -1017,7 +1012,6 @@ class Theme : Style {
     }
 
     ~this() {
-        //Log.d("Theme destructor");
         if (unknownStyleIds.length > 0) {
             Log.e("Unknown style statistics: ", unknownStyleIds);
         }

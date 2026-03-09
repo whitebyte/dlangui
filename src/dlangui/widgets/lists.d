@@ -190,7 +190,6 @@ class WidgetListAdapter : ListAdapterBase {
             w.onThemeChanged();
     }
     ~this() {
-        //Log.d("Destroying WidgetListAdapter");
     }
 
     /// return true to receive mouse events
@@ -860,7 +859,6 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
     }
 
     bool selectItem(int index, int disabledItemsSkipDirection) {
-        //debug Log.d("selectItem ", index, " skipDirection=", disabledItemsSkipDirection);
         if (index == -1 || disabledItemsSkipDirection == 0)
             return selectItem(index);
         int maxAttempts = itemCount;
@@ -886,7 +884,6 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
     }
 
     bool selectItem(int index) {
-        //debug Log.d("selectItem ", index);
         if (_selectedItemIndex == index) {
             updateSelectedItemFocus();
             makeSelectionVisible();
@@ -910,7 +907,6 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
     ~this() {
         if (_adapter)
             _adapter.disconnect(this);
-        //Log.d("Destroying List ", _id);
         if (_adapter !is null && _ownAdapter)
             destroy(_adapter);
         _adapter = null;
@@ -1292,34 +1288,10 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
             return true;
         }
         return super.onKeyEvent(event);
-        //if (_selectedItemIndex != -1 && event.action == KeyAction.KeyUp && (event.keyCode == KeyCode.SPACE || event.keyCode == KeyCode.RETURN)) {
-        //    itemClicked(_selectedItemIndex);
-        //    return true;
-        //}
-        //if (navigationDelta != 0) {
-        //    int p = _selectedItemIndex;
-        //    if (p < 0) {
-        //        if (navigationDelta < 0)
-        //            p = itemCount - 1;
-        //        else
-        //            p = 0;
-        //    } else {
-        //        p += navigationDelta;
-        //        if (p < 0)
-        //            p = itemCount - 1;
-        //        else if (p >= itemCount)
-        //            p = 0;
-        //    }
-        //    setHoverItem(-1);
-        //    selectItem(p);
-        //    return true;
-        //}
-        //return false;
     }
 
     /// process mouse event; return true if event is processed by widget.
     override bool onMouseEvent(MouseEvent event) {
-        //Log.d("onMouseEvent ", id, " ", event.action, "  (", event.x, ",", event.y, ")");
         super.onMouseEvent(event);
         if (event.action == MouseAction.Leave || event.action == MouseAction.Cancel) {
             setHoverItem(-1);
@@ -1374,7 +1346,6 @@ class ListWidget : WidgetGroup, OnScrollHandler, OnAdapterChangeHandler {
                         itemWidget.parent = oldParent;
                     }
                 }
-                //Log.d("mouse event action=", event.action, " button=", event.button, " flags=", event.flags);
                 if ((event.flags & (MouseFlag.LButton || MouseFlag.RButton)) || _selectOnHover) {
                     if (_selectedItemIndex != i && itemEnabled(i)) {
                         int prevSelection = _selectedItemIndex;
@@ -1565,5 +1536,3 @@ class StringListWidget : ListWidget {
 
 }
 
-//import dlangui.widgets.metadata;
-//mixin(registerWidgets!(ListWidget, StringListWidget)());

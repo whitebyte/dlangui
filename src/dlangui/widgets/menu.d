@@ -114,10 +114,6 @@ class MenuItem {
 
     /// get check for checkbox or radio button item
     @property bool checked() {
-        //if (_checked) {
-        //    Log.d("Menu item is checked");
-        //    return true;
-        //}
         return _checked;
     }
     /// check radio button with specified index, uncheck other radio buttons in group (group consists of sequence of radio button items; other item type - end of group)
@@ -272,11 +268,7 @@ class MenuItem {
 
     /// call to update state for action (if action is assigned for widget)
     void updateActionState(Widget w) {
-        //import dlangui.widgets.editors;
         if (_action) {
-            //if (_action.id == EditorActions.Copy) {
-            //    Log.d("Requesting Copy action. Old state: ", _action.state);
-            //}
             bool actionStateProcessed = w.updateActionState(_action, true, false);
             _enabled = _action.state.enabled;
             if (actionStateProcessed)
@@ -957,9 +949,6 @@ class MainMenu : MenuWidgetBase {
 
     /// call to update state for action (if action is assigned for widget)
     override void updateActionState(bool force) {
-        //Log.d("MainMenu: updateActionState");
-        //_item.updateActionState(this);
-
     }
 
     /// override and return true to track key events even when not focused
@@ -1018,12 +1007,6 @@ class MainMenu : MenuWidgetBase {
         } else
             deactivate();
     }
-
-    /// request relayout of widget and its children
-    //override void requestLayout() {
-    //    Log.d("MainMenu.requestLayout is called");
-    //    super.requestLayout();
-    //}
 
     /// bring focus to main menu, if not yet activated
     void activate() {
@@ -1091,7 +1074,6 @@ class MainMenu : MenuWidgetBase {
         }
         dchar hotkey = 0;
         if (event.action == KeyAction.KeyDown && event.keyCode >= KeyCode.KEY_A && event.keyCode <= KeyCode.KEY_Z && altPressed && noOtherModifiers && noAltGrKey) {
-//            Log.d("Alt + a..z");
             hotkey = cast(dchar)((event.keyCode - KeyCode.KEY_A) + 'a');
         }
         if (event.action == KeyAction.Text && altPressed && noOtherModifiers && noAltGrKey) {

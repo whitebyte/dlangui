@@ -456,7 +456,6 @@ class Action {
         // check for accelerators override in settings
         Accelerator[] res = findActionAccelerators(_id);
         if (res) {
-            //Log.d("Found accelerators ", res);
             return res;
         }
         // return this action accelerators
@@ -467,7 +466,6 @@ class Action {
         // check for accelerators override in settings
         Accelerator[] res = findActionAccelerators(_id);
         if (res) {
-            //Log.d("Found accelerators ", res);
             return res;
         }
         return _accelerators;
@@ -806,7 +804,6 @@ struct ButtonDetails {
     /// update for button down
     void down(short x, short y, ushort flags) {
         static import std.datetime;
-        //Log.d("Button down ", x, ",", y, " _downTs=", _downTs, " _upTs=", _upTs);
         long oldDownTs = _downTs;
         _downX = x;
         _downY = y;
@@ -815,7 +812,6 @@ struct ButtonDetails {
         _downTs = std.datetime.Clock.currStdTime;
         long downIntervalMs = (_downTs - oldDownTs) / 10000;
         long prevDownIntervalMs = (_downTs - _prevDownTs) / 10000;
-        //Log.d("Button down ", x, ",", y, " _downTs=", _downTs, " _upTs=", _upTs, " downInterval=", downIntervalMs);
         _tripleClick = (prevDownIntervalMs && prevDownIntervalMs < DOUBLE_CLICK_THRESHOLD_MS * 2);
         _doubleClick = !_tripleClick && (oldDownTs && downIntervalMs < DOUBLE_CLICK_THRESHOLD_MS);
         _prevDownTs = _doubleClick ? oldDownTs : 0;
@@ -823,7 +819,6 @@ struct ButtonDetails {
     /// update for button up
     void up(short x, short y, ushort flags) {
         static import std.datetime;
-        //Log.d("Button up ", x, ",", y, " _downTs=", _downTs, " _upTs=", _upTs);
         _doubleClick = false;
         _tripleClick = false;
         _upTs = std.datetime.Clock.currStdTime;
