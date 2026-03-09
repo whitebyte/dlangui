@@ -18,7 +18,7 @@ Main features:
 D compiler versions supported
 -----------------------------
 
-Requires DMD frontend 2.100.2 or newer.
+The fork started with DMD 2.111. No guarantees for older versions
 
 Widgets
 -------
