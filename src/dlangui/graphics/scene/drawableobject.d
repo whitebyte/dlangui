@@ -2,7 +2,6 @@ module dlangui.graphics.scene.drawableobject;
 
 import dlangui.core.config;
 static if (ENABLE_OPENGL):
-static if (BACKEND_GUI):
 
 import dlangui.core.types;
 

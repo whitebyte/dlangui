@@ -13,7 +13,6 @@ extern(C) @property dstring DLANGUI_VERSION() {
     return DLANGUI_VERSION_VALUE;
 }
 
-static if (BACKEND_GUI) {
 import dlangui.graphics.ftfonts;
 
 version (Windows) {
@@ -301,7 +300,6 @@ version (Windows) {
         return true;
     }
 }
-}
 
 /// initialize logging (for win32 - to file ui.log, for other platforms - stderr; log level is TRACE for debug builds, and WARN for release builds)
 extern (C) void initLogs() {
@@ -368,15 +366,11 @@ extern (C) void initResourceManagers() {
     }
     import dlangui.graphics.resources;
     embedStandardDlangUIResources();
-    static if (BACKEND_GUI) {
-        _imageCache = new ImageCache();
-    }
+    _imageCache = new ImageCache();
     _drawableCache = new DrawableCache();
-    static if (BACKEND_GUI) {
-        version (Windows) {
-            import dlangui.platforms.windows.win32fonts;
-            initWin32FontsTables();
-        }
+    version (Windows) {
+        import dlangui.platforms.windows.win32fonts;
+        initWin32FontsTables();
     }
 
     Log.d("Calling initSharedResourceManagers()");
@@ -426,9 +420,7 @@ extern (C) void releaseResourcesOnAppExit() {
 
     currentTheme = null;
     drawableCache = null;
-    static if (BACKEND_GUI) {
-        imageCache = null;
-    }
+    imageCache = null;
     FontManager.instance = null;
     static if (ENABLE_OPENGL) {
         import dlangui.graphics.gldrawbuf;

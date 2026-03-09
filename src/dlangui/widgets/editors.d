@@ -588,7 +588,7 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
         import std.conv : to;
         _iconsWidth = _showIcons ? _iconsPaneWidth : 0;
         _foldingWidth = _showFolding ? _foldingPaneWidth : 0;
-        _modificationMarksWidth = _showModificationMarks && (BACKEND_GUI || !_showLineNumbers) ? _modificationMarksPaneWidth : 0;
+        _modificationMarksWidth = _showModificationMarks ? _modificationMarksPaneWidth : 0;
         _lineNumbersWidth = 0;
         if (_showLineNumbers) {
             dchar[] s = to!(dchar[])(lineCount + 1);
@@ -1348,7 +1348,7 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
             Rect caretRc = caretRect();
             if (caretRc.intersects(_clientRect)) {
                 //caretRc.left++;
-                if (_replaceMode && BACKEND_GUI)
+                if (_replaceMode)
                     buf.fillRect(caretRc, _caretColorReplace);
                 //buf.drawLine(Point(caretRc.left, caretRc.bottom), Point(caretRc.left, caretRc.top), _caretColor);
                 buf.fillRect(Rect(caretRc.left, caretRc.top, caretRc.left + 1, caretRc.bottom), _caretColor);

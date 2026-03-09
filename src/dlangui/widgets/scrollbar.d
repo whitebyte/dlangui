@@ -405,10 +405,8 @@ class ScrollBar : AbstractSlider, OnClickHandler {
             _btnSize = _btnForward.measuredHeight;
         if (_btnSize < _btnBack.measuredHeight)
             _btnSize = _btnBack.measuredHeight;
-        static if (BACKEND_GUI) {
-            if (_btnSize < 16)
-                _btnSize = 16;
-        }
+        if (_btnSize < 16)
+            _btnSize = 16;
         if (_orientation == Orientation.Vertical) {
             // vertical
             sz.x = _btnSize;
@@ -827,10 +825,8 @@ class SliderWidget : AbstractSlider, OnClickHandler {
         _btnSize = _minIndicatorSize;
         if (_btnSize < _minIndicatorSize)
             _btnSize = _minIndicatorSize;
-        static if (BACKEND_GUI) {
-            if (_btnSize < 16)
-                _btnSize = 16;
-        }
+        if (_btnSize < 16)
+            _btnSize = 16;
         if (_orientation == Orientation.Vertical) {
             // vertical
             sz.x = _btnSize;

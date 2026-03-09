@@ -1655,12 +1655,10 @@ class Window : CustomEventTarget {
         showMessageBox(UIString.fromRaw(title), UIString.fromRaw(message), actions, defaultActionIndex, handler);
     }
 
-    static if (BACKEND_GUI) {
-        void showInputBox(UIString title, UIString message, dstring initialText, void delegate(dstring result) handler) {
-            import dlangui.dialogs.inputbox;
-            InputBox dlg = new InputBox(title, message, this, initialText, handler);
-            dlg.show();
-        }
+    void showInputBox(UIString title, UIString message, dstring initialText, void delegate(dstring result) handler) {
+        import dlangui.dialogs.inputbox;
+        InputBox dlg = new InputBox(title, message, this, initialText, handler);
+        dlg.show();
     }
 
     void showInputBox(dstring title, dstring message, dstring initialText, void delegate(dstring result) handler) {

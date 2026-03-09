@@ -477,7 +477,7 @@ class UrlImageTextButton : ImageTextButton {
         //_label.styleId = STYLE_BUTTON_LABEL;
         //_label.textFlags(TextFlag.Underline);
         _label.styleId = "BUTTON_LABEL_LINK";
-        static if (BACKEND_GUI) padding(Rect(3,3,3,3));
+        padding(Rect(3,3,3,3));
     }
 }
 
@@ -487,7 +487,7 @@ class LinkButton : ImageTextButton {
         super(a);
         styleId = null;
         _label.styleId = "BUTTON_LABEL_LINK";
-        static if (BACKEND_GUI) padding(Rect(3,3,3,3));
+        padding(Rect(3,3,3,3));
     }
 }
 

@@ -2,8 +2,6 @@ module dlangui.core.config;
 
 extern(C) @property dstring DLANGUI_VERSION();
 
-enum BACKEND_GUI = true;
-enum WIDGET_STYLE_CONSOLE = false;
 
 version (NO_FREETYPE) {
     enum ENABLE_FREETYPE = false;

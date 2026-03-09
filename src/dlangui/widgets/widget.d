@@ -881,11 +881,7 @@ public:
             this.tabOrder = widget.thisOrParentTabOrder();
             this.rect = widget.pos;
         }
-        static if (BACKEND_GUI) {
-            static enum NEAR_THRESHOLD = 10;
-        } else {
-            static enum NEAR_THRESHOLD = 1;
-        }
+        static enum NEAR_THRESHOLD = 10;
         bool nearX(TabOrderInfo v) {
             return v.rect.left >= rect.left - NEAR_THRESHOLD  && v.rect.left <= rect.left + NEAR_THRESHOLD;
         }

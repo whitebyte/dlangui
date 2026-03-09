@@ -21,7 +21,6 @@ Authors:   Vadim Lopatin, coolreader.org@gmail.com
 module dlangui.graphics.images;
 
 public import dlangui.core.config;
-static if (BACKEND_GUI):
 
 import stb_image;
 

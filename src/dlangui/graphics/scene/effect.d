@@ -2,7 +2,6 @@ module dlangui.graphics.scene.effect;
 
 public import dlangui.core.config;
 static if (ENABLE_OPENGL):
-static if (BACKEND_GUI):
 
 import dlangui.core.types;
 import dlangui.core.logger;
