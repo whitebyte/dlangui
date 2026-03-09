@@ -250,9 +250,7 @@ private:
     version (Posix) {
         res ~= RootEntry(RootEntryType.ROOT, "/", "File System"d);
     }
-    version(Android) {
-        // do nothing
-    } else version(linux) {
+    version(linux) {
         import std.string : fromStringz;
         import std.exception : collectException;
 
@@ -378,8 +376,6 @@ RootEntry[] getBookmarkPaths() nothrow
 {
     RootEntry[] res;
     version(OSX) {
-
-    } else version(Android) {
 
     } else version(Posix) {
         /*

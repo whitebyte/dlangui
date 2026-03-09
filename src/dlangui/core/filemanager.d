@@ -64,8 +64,6 @@ import isfreedesktop;
             pid = spawnProcess(args);
             wait(pid);
             return true;
-        } else version(Android) {
-            Log.w("showInFileManager is not implemented for current platform");
         } else static if (isFreedesktop) {
             import std.stdio : File;
             import std.algorithm : map, filter, splitter, canFind, equal, findSplit;

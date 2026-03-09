@@ -32,18 +32,6 @@ version (USE_SDL) {
     enum BACKEND_SDL = true;
     enum BACKEND_X11 = false;
     enum BACKEND_WIN32 = false;
-    enum BACKEND_ANDROID = false;
-} else version (USE_ANDROID) {
-    // Android backend already selected using version identifier
-    version (USE_OPENGL) {
-        enum ENABLE_OPENGL = true;
-    } else {
-        enum ENABLE_OPENGL = false;
-    }
-    enum BACKEND_SDL = false;
-    enum BACKEND_X11 = false;
-    enum BACKEND_WIN32 = false;
-    enum BACKEND_ANDROID = true;
 } else version (USE_X11) {
     // X11 backend already selected using version identifier
     version (NO_OPENGL) {
@@ -58,7 +46,6 @@ version (USE_SDL) {
     enum BACKEND_SDL = false;
     enum BACKEND_X11 = true;
     enum BACKEND_WIN32 = false;
-    enum BACKEND_ANDROID = false;
 } else version (USE_WIN32) {
     // Win32 backend already selected using version identifier
     version (NO_OPENGL) {
@@ -73,7 +60,6 @@ version (USE_SDL) {
     enum BACKEND_SDL = false;
     enum BACKEND_X11 = false;
     enum BACKEND_WIN32 = true;
-    enum BACKEND_ANDROID = false;
 } else version (USE_EXTERNAL) {
     // External backend already selected using version identifier
     // All config variables should be settled in external config file
@@ -89,13 +75,6 @@ version (USE_SDL) {
         enum BACKEND_SDL = false;
         enum BACKEND_X11 = false;
         enum BACKEND_WIN32 = true;
-        enum BACKEND_ANDROID = false;
-    } else version(Android) {
-        enum ENABLE_OPENGL = true;
-        enum BACKEND_SDL = true;
-        enum BACKEND_X11 = false;
-        enum BACKEND_WIN32 = false;
-        enum BACKEND_ANDROID = true;
     } else version(linux) {
         // Default for Linux: use SDL and OpenGL
         version (NO_OPENGL) {
@@ -106,7 +85,6 @@ version (USE_SDL) {
         enum BACKEND_SDL = true;
         enum BACKEND_X11 = false;
         enum BACKEND_WIN32 = false;
-        enum BACKEND_ANDROID = false;
     } else version(OSX) {
         // Default: use SDL and OpenGL
         version (NO_OPENGL) {
@@ -117,7 +95,6 @@ version (USE_SDL) {
         enum BACKEND_SDL = true;
         enum BACKEND_X11 = false;
         enum BACKEND_WIN32 = false;
-        enum BACKEND_ANDROID = false;
     } else {
         // Unknown platform: use SDL and OpenGL
         version (NO_OPENGL) {
@@ -128,6 +105,5 @@ version (USE_SDL) {
         enum BACKEND_SDL = true;
         enum BACKEND_X11 = false;
         enum BACKEND_WIN32 = false;
-        enum BACKEND_ANDROID = false;
     }
 }

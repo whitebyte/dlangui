@@ -1105,7 +1105,6 @@ public:
             // try to find focusable child
             return window.focusedWidget;
         }
-        hideSoftKeyboard();
         return window.setFocus(this, reason);
     }
     /// searches children for first focusable item, returns null if not found
@@ -1121,24 +1120,6 @@ public:
         if (canFocus)
             return this;
         return null;
-    }
-
-    ///
-    final void hideSoftKeyboard() {
-        version(Android) {
-            import dlangui.platforms.android.androidapp;
-            if (auto androidPlatform = cast(AndroidPlatform)platform)
-                androidPlatform.showSoftKeyboard(false);
-        }
-    }
-
-    /// Shows system virtual keyabord where applicable
-    final void showSoftKeyboard() {
-        version(Android) {
-            import dlangui.platforms.android.androidapp;
-            if (auto androidPlatform = cast(AndroidPlatform)platform)
-                androidPlatform.showSoftKeyboard(true);
-        }
     }
 
     // =======================================================

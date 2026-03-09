@@ -33,24 +33,9 @@ import std.string;
 import std.array;
 import std.algorithm : any;
 
-version (Android) {
-    enum SUPPORT_LEGACY_OPENGL = false;
-    public import EGL.eglplatform : EGLint;
-    public import EGL.egl;
-    //public import GLES2.gl2;
-    public import GLES3.gl3;
-
-    static if (SUPPORT_LEGACY_OPENGL) {
-        public import GLES.gl : glEnableClientState, glLightfv, glColor4f, GL_ALPHA_TEST, GL_VERTEX_ARRAY,
-            GL_COLOR_ARRAY, glVertexPointer, glColorPointer, glDisableClientState,
-            GL_TEXTURE_COORD_ARRAY, glTexCoordPointer, glColorPointer, glMatrixMode,
-            glLoadMatrixf, glLoadIdentity, GL_PROJECTION, GL_MODELVIEW;
-    }
-
-} else {
-    enum SUPPORT_LEGACY_OPENGL = false; //true;
-    public import bindbc.opengl;
-    import bindbc.loader : ErrorInfo, errors;
+enum SUPPORT_LEGACY_OPENGL = false; //true;
+public import bindbc.opengl;
+import bindbc.loader : ErrorInfo, errors;
 
 
 private void gl3CheckMissingSymFunc(const(ErrorInfo)[] errors)
@@ -224,10 +209,6 @@ class GLProgram : dlangui.graphics.scene.mesh.GraphicsEffect {
             } else if (ch != '.')
                 break;
         }
-        version (Android) {
-            glslversionInt = 130;
-        }
-
         vertexShader = compileShader(vertexSource, GL_VERTEX_SHADER);
         fragmentShader = compileShader(fragmentSource, GL_FRAGMENT_SHADER);
         if (!vertexShader || !fragmentShader) {
@@ -668,18 +649,14 @@ bool initGLSupport(bool legacy = false) {
     import bindbc.opengl.config : GLVersion = GLSupport;
     if (_glSupport && _glSupport.valid)
         return true;
-    version(Android) {
-        Log.d("initGLSupport");
-    } else {
-        GLVersion res = loadOpenGL();
-        if([GLVersion.badLibrary, GLVersion.noLibrary, GLVersion.noContext].any!(x => x == res))
-        {
-            Log.e("bindbc-opengl cannot load OpenGL library!");
-        }
-        if(res < GLVersion.gl30)
-            legacy = true;
-        gl3CheckMissingSymFunc(errors);
+    GLVersion res = loadOpenGL();
+    if([GLVersion.badLibrary, GLVersion.noLibrary, GLVersion.noContext].any!(x => x == res))
+    {
+        Log.e("bindbc-opengl cannot load OpenGL library!");
     }
+    if(res < GLVersion.gl30)
+        legacy = true;
+    gl3CheckMissingSymFunc(errors);
     if (!_glSupport) { // TODO_GRIM: Legacy looks very broken to me.
         Log.d("glSupport not initialized: trying to create");
         int major = *cast(int*)(glGetString(GL_VERSION)[0 .. 1].ptr);
@@ -687,14 +664,10 @@ bool initGLSupport(bool legacy = false) {
         _glSupport = new GLSupport(legacy);
         if (!_glSupport.valid) {
             Log.e("Failed to compile shaders");
-            version (Android) {
-                // do not recreate legacy mode
-            } else {
-                // try opposite legacy flag
-                if (_glSupport.legacyMode == legacy) {
-                    Log.i("Trying to reinit GLSupport with legacy flag ", !legacy);
-                    _glSupport = new GLSupport(!legacy);
-                }
+            // try opposite legacy flag
+            if (_glSupport.legacyMode == legacy) {
+                Log.i("Trying to reinit GLSupport with legacy flag ", !legacy);
+                _glSupport = new GLSupport(!legacy);
                 // Situation when opposite legacy flag is true and GL version is 3+ with no old functions
                 if (_glSupport.legacyMode) {
                     if (major >= 3) {
@@ -728,13 +701,9 @@ final class GLSupport {
 
     this(bool legacy = false) {
         _queue = new OpenGLQueue;
-        version (Android) {
-            Log.d("creating GLSupport");
-        } else {
-            if (legacy /*&& !glLightfv*/) {
-                Log.w("GLSupport legacy API is not supported");
-                legacy = false;
-            }
+        if (legacy /*&& !glLightfv*/) {
+            Log.w("GLSupport legacy API is not supported");
+            legacy = false;
         }
         _legacyMode = legacy;
         if (!_legacyMode)
@@ -1200,15 +1169,9 @@ class GLVertexBuffer : VertexBuffer {
     protected GLuint _vao;
 
     this() {
-    version (Android) {
-            checkgl!glGenBuffers(1, &_vertexBuffer);
-            checkgl!glGenBuffers(1, &_indexBuffer);
-            checkgl!glGenVertexArrays(1, &_vao);
-    } else {
-            assertgl!glGenBuffers(1, &_vertexBuffer);
-            assertgl!glGenBuffers(1, &_indexBuffer);
-            assertgl!glGenVertexArrays(1, &_vao);
-    }
+        assertgl!glGenBuffers(1, &_vertexBuffer);
+        assertgl!glGenBuffers(1, &_indexBuffer);
+        assertgl!glGenVertexArrays(1, &_vao);
     }
 
     ~this() {
@@ -1645,5 +1608,4 @@ private final class OpenGLQueue {
         _texCoords ~= cast(float[])texCoords;
         _indices ~= cast(int[])indices;
     };
-}
 }

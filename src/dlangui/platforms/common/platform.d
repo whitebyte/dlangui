@@ -2110,12 +2110,9 @@ mixin template APP_ENTRY_POINT() {
                 }
             }
         } else {
-            version (Android) {
-            } else {
-                int main(string[] args)
-                {
-                    return DLANGUImain(args);
-                }
+            int main(string[] args)
+            {
+                return DLANGUImain(args);
             }
         }
     }

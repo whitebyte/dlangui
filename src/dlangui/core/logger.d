@@ -44,9 +44,6 @@ import std.stdio;
 import std.datetime : SysTime, Clock;
 import core.sync.mutex;
 
-version (Android) {
-    import android.log;
-}
 
 /// Log levels
 enum LogLevel : int {
@@ -180,70 +177,25 @@ class Log {
             default: return "?";
         }
     }
-    version (Android) {
-        static android_LogPriority toAndroidLogPriority(LogLevel level) {
-            switch (level) with (LogLevel) {
-                /// Fatal error, cannot resume
-                case Fatal:
-                    return android_LogPriority.ANDROID_LOG_FATAL;
-                /// Error
-                case Error:
-                    return android_LogPriority.ANDROID_LOG_ERROR;
-                /// Warning
-                case Warn:
-                    return android_LogPriority.ANDROID_LOG_WARN;
-                /// Informational message
-                case Info:
-                    return android_LogPriority.ANDROID_LOG_INFO;
-                /// Debug message
-                case Debug:
-                    return android_LogPriority.ANDROID_LOG_DEBUG;
-                /// Tracing message
-                case Trace:
-                default:
-                    return android_LogPriority.ANDROID_LOG_VERBOSE;
-            }
-        }
-    }
     /// Log message with arbitrary log level
     static public void log(S...)(LogLevel level, S args) {
         if (logLevel >= level) {
-            version (Android) {
-                import std.format;
-                import std.string : toStringz;
-                import std.format;
-                import std.conv : to;
-                char[] msg;
-                foreach(arg; args) {
-                    msg ~= to!string(arg);
-                }
-                msg ~= cast(char)0;
-                __android_log_write(toAndroidLogPriority(level), ANDROID_LOG_TAG, msg.ptr);
-            } else {
-                if (logFile !is null && logFile.isOpen) {
-                    SysTime ts = Clock.currTime();
-                    logFile.writef("%04d-%02d-%02d %02d:%02d:%02d.%03d %s  ", ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second, ts.fracSecs.split!("msecs").msecs, logLevelName(level));
-                    logFile.writeln(args);
-                    logFile.flush();
-                }
+            if (logFile !is null && logFile.isOpen) {
+                SysTime ts = Clock.currTime();
+                logFile.writef("%04d-%02d-%02d %02d:%02d:%02d.%03d %s  ", ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second, ts.fracSecs.split!("msecs").msecs, logLevelName(level));
+                logFile.writeln(args);
+                logFile.flush();
             }
         }
     }
     /// Log message with arbitrary log level with format string
     static public void logf(S...)(LogLevel level, string fmt, S args) {
         if (logLevel >= level) {
-            version (Android) {
-                import std.string : toStringz;
-                import std.format;
-                string msg = fmt.format(args);
-                __android_log_write(toAndroidLogPriority(level), ANDROID_LOG_TAG, msg.toStringz);
-            } else {
-                if (logFile !is null && logFile.isOpen) {
-                    SysTime ts = Clock.currTime();
-                    logFile.writef("%04d-%02d-%02d %02d:%02d:%02d.%03d %s  ", ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second, ts.fracSecs.split!("msecs").msecs, logLevelName(level));
-                    logFile.writefln(fmt, args);
-                    logFile.flush();
-                }
+            if (logFile !is null && logFile.isOpen) {
+                SysTime ts = Clock.currTime();
+                logFile.writef("%04d-%02d-%02d %02d:%02d:%02d.%03d %s  ", ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second, ts.fracSecs.split!("msecs").msecs, logLevelName(level));
+                logFile.writefln(fmt, args);
+                logFile.flush();
             }
         }
     }
@@ -332,11 +284,6 @@ class Log {
         }
     }
 
-    version (Android) {
-        static public void setLogTag(const char * tag) {
-            ANDROID_LOG_TAG = tag;
-        }
-    }
 }
 
 debug {

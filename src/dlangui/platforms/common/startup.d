@@ -238,14 +238,10 @@ version (Windows) {
         if (!registerFontConfigFonts(ft)) {
             // TODO: use FontConfig
             Log.w("No fonts found using FontConfig. Trying hardcoded paths.");
-			version (Android) {
-				ft.registerFontsFromDirectory("/system/fonts");
-			} else {
-	            ft.registerFonts("/usr/share/fonts/truetype/dejavu/");
-	            ft.registerFonts("/usr/share/fonts/TTF/");
-	            ft.registerFonts("/usr/share/fonts/dejavu/");
-	            ft.registerFonts("/usr/share/fonts/truetype/ttf-dejavu/"); // let it compile on Debian Wheezy
-			}
+            ft.registerFonts("/usr/share/fonts/truetype/dejavu/");
+            ft.registerFonts("/usr/share/fonts/TTF/");
+            ft.registerFonts("/usr/share/fonts/dejavu/");
+            ft.registerFonts("/usr/share/fonts/truetype/ttf-dejavu/"); // let it compile on Debian Wheezy
             version(OSX) {
                 ft.registerFont("/Library/Fonts/Arial.ttf", FontFamily.SansSerif, "Arial", false, FontWeight.Normal, true);
                 ft.registerFont("/Library/Fonts/Arial Bold.ttf", FontFamily.SansSerif, "Arial", false, FontWeight.Bold, true);
@@ -320,9 +316,6 @@ extern (C) void initLogs() {
                 Log.i("Logging to file ui.log");
             }
         }
-    } else version(Android) {
-        Log.setLogTag("dlangui");
-        Log.setLogLevel(LogLevel.Trace);
     } else {
         Log.setStderrLogger();
     }
