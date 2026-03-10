@@ -72,6 +72,7 @@ public {
     import dlangui.widgets.grid;
     import dlangui.widgets.tree;
     import dlangui.widgets.combobox;
+    import dlangui.widgets.autocomplete;
     import dlangui.widgets.popup;
     import dlangui.widgets.appframe;
     import dlangui.widgets.statusline;
