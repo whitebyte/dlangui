@@ -1,15 +1,17 @@
 # Changelog
 
-### Removed backends
+### Removed
 
-- **DSFML** — removed `src/dlangui/platforms/dsfml/`, `sfml` dub configuration, and `dsfml` dependency.
+- **DSFML backend** — removed `src/dlangui/platforms/dsfml/`, `sfml` dub configuration, and `dsfml` dependency.
   Was never finished or production-ready, no clear benefits over SDL.
 
-- **Console/TUI** — removed `src/dlangui/platforms/ansi_console/`, `console` dub configuration, and all `WIDGET_STYLE_CONSOLE` conditional code.
+- **Console/TUI backend** — removed `src/dlangui/platforms/ansi_console/`, `console` dub configuration, and all `WIDGET_STYLE_CONSOLE` conditional code.
   Again, probably was fun to write, but TUIs in general is a completely different story, and not the one I want to have. It pervaded the codebase with `static if (WIDGET_STYLE_CONSOLE)` branches in rendering, theming, and layout code. A terminal UI has fundamentally different layout assumptions from a GUI, making it a poor fit as a configuration of the same widget tree.
 
-- **Android** — removed `src/dlangui/platforms/android/`, `android/` build directory, `examples/android/`, and all `version(Android)` conditional code.
+- **Android backend** — removed `src/dlangui/platforms/android/`, `android/` build directory, `examples/android/`, and all `version(Android)` conditional code.
   D on Android has never had a real production story. The LDC-based toolchain required for ARM cross-compilation is cumbersome, the Android ecosystem moves fast, and there are no known D apps in the Play Store. DlangUI's heydays were circa '15-16. In 2026 it's just dead weight
+
+- **Built-in 3D game engine (!)** - seriously, there was one, running a Minecraft-style voxel game example. As ambitious as it is, it has nothing to do with GUI frameworks
 
 ### Dependencies
 
