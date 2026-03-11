@@ -1,6 +1,7 @@
 module widgets;
 
 public import widgets.animation;
+public import widgets.autocomplete;
 public import widgets.buttons;
 public import widgets.canvas;
 public import widgets.charts;

@@ -302,6 +302,7 @@ extern (C) int UIAppMain(string[] args)
     tabs.addTab((new SampleAnimationWidget("tab6")).layoutWidth(FILL_PARENT).layoutHeight(FILL_PARENT), "TAB_ANIMATION"c);
     tabs.addTab(new CanvasExample("canvas"), UIString.fromId("TAB_CANVAS"));
     tabs.addTab(new IconsExample("icons"), "Icons"d);
+    tabs.addTab(new AutoCompleteExample("autocomplete"), "AutoComplete"d);
 
     static if (ENABLE_OPENGL)
     {

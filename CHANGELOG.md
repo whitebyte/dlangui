@@ -21,3 +21,7 @@
 ### Font rendering - Freetype is always enabled
 
 In 2015 Win32 GDI fallback made sense. In 2026, I don't think so.
+
+## New widgets
+
+- Autocomplete text input
