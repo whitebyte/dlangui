@@ -46,8 +46,6 @@
         "./examples/helloworld/",
         "./examples/example1/",
         "./examples/dmledit/",
-        "./examples/d3d/",
-        "./examples/dminer/",
         "./examples/tetris/",
         "./examples/ircclient/",
         "./examples/spreadsheet/",
