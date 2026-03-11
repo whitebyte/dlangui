@@ -2072,7 +2072,9 @@ class EditWidgetBase : ScrollWidgetBase, EditableContentListener, MenuItemAction
     /// map key to action
     override protected Action findKeyAction(uint keyCode, uint flags) {
         // don't handle tabs when disabled
-        if (keyCode == KeyCode.TAB && (flags == 0 || flags == KeyFlag.Shift) && (!_wantTabs || readOnly))
+        // mask to canonical Shift|Control|Alt to handle LShift/RShift variants
+        uint maskedFlags = flags & (KeyFlag.Shift | KeyFlag.Control | KeyFlag.Alt);
+        if (keyCode == KeyCode.TAB && (maskedFlags == 0 || maskedFlags == KeyFlag.Shift) && (!_wantTabs || readOnly))
             return null;
         return super.findKeyAction(keyCode, flags);
     }
