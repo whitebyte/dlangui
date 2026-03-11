@@ -303,7 +303,7 @@ extern (C) int UIAppMain(string[] args)
     tabs.addTab(new CanvasExample("canvas"), UIString.fromId("TAB_CANVAS"));
     tabs.addTab(new IconsExample("icons"), "Icons"d);
 
-    static if (BACKEND_GUI && ENABLE_OPENGL)
+    static if (ENABLE_OPENGL)
     {
         tabs.addTab(new OpenGLExample(), "OpenGL"d);
     }
@@ -315,9 +315,7 @@ extern (C) int UIAppMain(string[] args)
 
     tabs.selectTab("controls");
 
-    static if (BACKEND_GUI) {
-        window.windowIcon = drawableCache.getImage("dlangui-logo1");
-    }
+    window.windowIcon = drawableCache.getImage("dlangui-logo1");
     window.show();
     //window.windowCaption = "New Window Caption";
     // run message loop
